@@ -58,17 +58,16 @@ in
           pkgs.runCommand "toYamlFile" { buildInputs = [ pkgs.yq-go ]; } ''
             yq -P '.' ${pkgs.writeTextFile { name = "tmp.json"; text = (builtins.toJSON attrs); }} > $out
           '';
-        packages = pkgs.lib.mapAttrs'
-          (name: processComposeConfig: {
-            inherit name;
-            value = pkgs.writeShellApplication {
+        packages = pkgs.lib.mapAttrs
+          (name: processComposeConfig:
+            pkgs.writeShellApplication {
               inherit name;
               runtimeInputs = [ config.process-compose.package ];
               text = ''
                 process-compose -f ${toYAMLFile processComposeConfig} "$@"
               '';
-            };
-          })
+            }
+          )
           config.process-compose.configs;
       in
       {
