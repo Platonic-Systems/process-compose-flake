@@ -14,8 +14,8 @@ in
       ({ config, self', inputs', pkgs, system, ... }: {
         options.process-compose = mkOption {
           description = mdDoc ''
-            process-compose-flake: creates process-compose executables
-            from your Nix attribute sets.
+            process-compose-flake: creates [process-compose](https://github.com/F1bonacc1/process-compose)
+            executables from process-compose configurations written as Nix attribute sets.
           '';
           type = types.submodule {
             options = {
