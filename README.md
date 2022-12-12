@@ -35,7 +35,7 @@ The `package` output in turn can be used to make the `watch-server` command avai
 devShells = {
   default = pkgs.mkShell {
     name = "my-shell";
-    buildInputs = [
+    nativeBuildInputs = [
       self'.packages.watch-server
     ];
   };

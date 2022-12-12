@@ -27,7 +27,8 @@ in
                 default = { };
                 example = {
                   # apps.${system}.watch-server and packages.${system}.watch-server become available
-                  # execute `nix run .#watch-server` or incude it as a buildInput to your devShell
+                  # execute `nix run .#watch-server` or incude packages.${system}.watch-server
+                  # as a nativeBuildInput to your devShell
                   watch-server = {
                     processes = {
                       backend = "${pkgs.simple-http-server}";
