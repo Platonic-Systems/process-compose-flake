@@ -24,7 +24,7 @@ in
                 default = pkgs.process-compose;
               };
               configs = mkOption {
-                type = types.attrsOf types.attrs;
+                type = types.attrsOf (pkgs.formats.yaml { }).type;
                 default = { };
                 example =
                   # apps.${system}.watch-server and packages.${system}.watch-server become available
