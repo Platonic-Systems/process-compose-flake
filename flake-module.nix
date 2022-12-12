@@ -5,7 +5,8 @@ let
   inherit (lib)
     mdDoc
     mkOption
-    types;
+    types
+    literalExpression;
 in
 {
   options = {
@@ -25,17 +26,20 @@ in
               configs = mkOption {
                 type = types.attrsOf types.attrs;
                 default = { };
-                example = {
+                example =
                   # apps.${system}.watch-server and packages.${system}.watch-server become available
                   # execute `nix run .#watch-server` or incude packages.${system}.watch-server
                   # as a nativeBuildInput to your devShell
-                  watch-server = {
-                    processes = {
-                      backend = "${pkgs.simple-http-server}";
-                      frontend = "${pkgs.simple-http-server}";
+                  literalExpression ''
+                    {
+                      watch-server = {
+                        processes = {
+                          backend = "''${pkgs.simple-http-server}";
+                          frontend = "''${pkgs.simple-http-server}";
+                        };
+                      };
                     };
-                  };
-                };
+                  '';
                 description = mdDoc ''
                   For each attribute `x = process-compose config` a flake app and package `x` is added to the flake.
                   Which runs process-compose with the declared config.
