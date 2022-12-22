@@ -22,6 +22,10 @@ in
               package = mkOption {
                 type = types.package;
                 default = pkgs.process-compose;
+                defaultText = lib.literalExpression "pkgs.process-compose";
+                description = ''
+                  The process-compose package to bundle up in the command package and flake app.
+                '';
               };
               configs = mkOption {
                 type = types.attrsOf (pkgs.formats.yaml { }).type;
