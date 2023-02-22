@@ -73,7 +73,7 @@ in
           )
           config.process-compose.configs;
 
-        apps = pkgs.lib.mapAttrs'
+        apps = pkgs.lib.mapAttrs
           (name: _: {
             inherit name;
             value = {
