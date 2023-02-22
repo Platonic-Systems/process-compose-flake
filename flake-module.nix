@@ -6,13 +6,15 @@ let
     mdDoc
     mkOption
     types
-    literalExpression;
+    literalExpression
+    warn;
 in
 {
   options = {
     perSystem = mkPerSystemOption
       ({ config, self', inputs', pkgs, system, ... }: {
         options.process-compose = mkOption {
+          default = warn "process-compose flake module was imported but not used" { };
           description = mdDoc ''
             process-compose-flake: creates [process-compose](https://github.com/F1bonacc1/process-compose)
             executables from process-compose configurations written as Nix attribute sets.
@@ -58,6 +60,7 @@ in
           pkgs.runCommand "toYamlFile" { buildInputs = [ pkgs.yq-go ]; } ''
             yq -P '.' ${pkgs.writeTextFile { name = "tmp.json"; text = (builtins.toJSON attrs); }} > $out
           '';
+
         packages = pkgs.lib.mapAttrs
           (name: processComposeConfig:
             pkgs.writeShellApplication {
@@ -69,9 +72,7 @@ in
             }
           )
           config.process-compose.configs;
-      in
-      {
-        inherit packages;
+
         apps = pkgs.lib.mapAttrs'
           (name: _: {
             inherit name;
@@ -81,6 +82,9 @@ in
             };
           })
           config.process-compose.configs;
+      in
+      {
+        inherit packages apps;
       };
   };
 }
