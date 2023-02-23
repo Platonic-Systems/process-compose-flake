@@ -47,3 +47,7 @@ devShells = {
 ```
 
 You can enter your devShell by running `nix develop` and run `watch-server` to run your processes.
+
+## Alternatives
+
+For a similar (and less feature-rich) module that uses a `Procfile`-based runner, see https://github.com/srid/proc-flake
