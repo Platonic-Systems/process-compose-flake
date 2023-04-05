@@ -49,6 +49,13 @@ in
                   Which runs process-compose with the declared config.
                 '';
               };
+              port = mkOption {
+                type = types.int;
+                default = 8080;
+                description = ''
+                  Port to serve process-compose's Swagger API on.
+                '';
+              };
             };
           };
         };
@@ -68,7 +75,7 @@ in
               inherit name;
               runtimeInputs = [ config.process-compose.package ];
               text = ''
-                process-compose -f ${toYAMLFile processComposeConfig} "$@"
+                process-compose -p ${builtins.toString config.process-compose.port} -f ${toYAMLFile processComposeConfig} "$@"
               '';
             }
           )
