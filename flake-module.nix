@@ -53,8 +53,8 @@ in
                 type = types.int;
                 default = 8080;
                 description = ''
-                  Port at which process-compose swagger API is provided.
-                  '';
+                  Port to serve process-compose's Swagger API on.
+                '';
               };
             };
           };
