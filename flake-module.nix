@@ -83,15 +83,6 @@ in
       in
       {
         inherit packages;
-        apps = pkgs.lib.mapAttrs'
-          (name: _: {
-            inherit name;
-            value = {
-              type = "app";
-              program = packages.${name};
-            };
-          })
-          config.process-compose.configs;
       };
   };
 }
