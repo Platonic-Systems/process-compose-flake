@@ -17,6 +17,7 @@ in
             process-compose-flake: creates [process-compose](https://github.com/F1bonacc1/process-compose)
             executables from process-compose configurations written as Nix attribute sets.
           '';
+          default = { };
           type = types.submodule {
             options = {
               package = mkOption {
