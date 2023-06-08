@@ -45,11 +45,9 @@ process-compose.configs = {
 };
 ```
 
-`process-compose-flake` will generate the following two outputs for you:
-  - `apps.${system}.watch-server`
-  - `packages.${system}.watch-server`
+`process-compose-flake` will generate the `packages.${system}.watch-server` output for you.
 
-Using the `apps` output you can spin up the processes by running `nix run .#watch-server`.
+You can then spin up the processes by running `nix run .#watch-server`.
 
 The `package` output in turn can be used to make the `watch-server` command available in your `devShell`:
 ```nix
