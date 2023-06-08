@@ -17,7 +17,10 @@ nix flake init -t github:Platonic-Systems/process-compose-flake
 nix run
 ```
 
-This should open http://127.0.0.1:8080/ in your web browser. If not, navigate to the logs for the `sqlite-web` process and access the URL.
+This should open http://127.0.0.1:8080/ in your web browser. If not, navigate to the logs for the `sqlite-web` process and access the URL. The interface should look like this:
+
+<img width="879" alt="image" src="https://github.com/Platonic-Systems/process-compose-flake/assets/3998/254443fa-f3c2-4675-9ced-2a39ac23591d">
+
 
 ## Usage
 Let's say you want to have a `devShell` that makes a command `watch-server` available, that you can use to spin up your projects `backend-server`, `frontend-server`, and `proxy-server`.
