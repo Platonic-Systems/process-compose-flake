@@ -7,7 +7,7 @@ This module is practical for local development e.g. if you have a lot of runtime
 
 ## Quick Example
 
-See [`./example/flake.nix`](example/flake.nix) for an example flake. This example shows a demo of [sqlite-web](https://github.com/coleifer/sqlite-web) using the using the sample [chinhook-database](https://github.com/lerocha/chinook-database).
+See [`./example/flake.nix`](example/flake.nix) for an example flake. This example shows a demo of [sqlite-web](https://github.com/coleifer/sqlite-web) using the sample [chinhook-database](https://github.com/lerocha/chinook-database).
 
 To run this example locally,
 
