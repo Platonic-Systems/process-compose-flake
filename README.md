@@ -5,6 +5,20 @@ This `flake-parts` module allows you to declare one or more `process-compose` co
 
 This module is practical for local development e.g. if you have a lot of runtime dependencies that depend on each other. Stop executing these programs imperatively over and over again in a specific order, and stop the need to write complicated shell scripts to automate this. `process-compose` gives you a process dashboard for monitoring, inspecting logs for each process, and much more, all of this in a TUI.
 
+## Quick Example
+
+See [`./example/flake.nix`](example/flake.nix) for an example flake. This example shows a demo of [sqlite-web](https://github.com/coleifer/sqlite-web) using the using the sample [chinhook-database](https://github.com/lerocha/chinook-database).
+
+To run this example locally,
+
+```sh
+mkdir example && cd example
+nix flake init -t github:Platonic-Systems/process-compose-flake
+nix run
+```
+
+This should open http://127.0.0.1:8080/ in your web browser. If not, navigate to the logs for the `sqlite-web` process and access the URL.
+
 ## Usage
 Let's say you want to have a `devShell` that makes a command `watch-server` available, that you can use to spin up your projects `backend-server`, `frontend-server`, and `proxy-server`.
 
