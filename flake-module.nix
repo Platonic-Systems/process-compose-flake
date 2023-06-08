@@ -56,6 +56,13 @@ in
                   Port to serve process-compose's Swagger API on.
                 '';
               };
+              disable-tui = mkOption {
+                type = types.bool;
+                default = false;
+                description = ''
+                  Disable the process-compose TUI.
+                '';
+              };
             };
           };
         };
@@ -69,13 +76,14 @@ in
           pkgs.runCommand "toYamlFile" { buildInputs = [ pkgs.yq-go ]; } ''
             yq -P '.' ${pkgs.writeTextFile { name = "tmp.json"; text = (builtins.toJSON attrs); }} > $out
           '';
+        disableTuiToString = if config.process-compose.disable-tui then "false" else "true";
         packages = pkgs.lib.mapAttrs
           (name: processComposeConfig:
             pkgs.writeShellApplication {
               inherit name;
               runtimeInputs = [ config.process-compose.package ];
               text = ''
-                process-compose -p ${builtins.toString config.process-compose.port} -f ${toYAMLFile processComposeConfig} "$@"
+                process-compose -p ${builtins.toString config.process-compose.port} -f ${toYAMLFile processComposeConfig} -t=${disableTuiToString} "$@"
               '';
             }
           )
