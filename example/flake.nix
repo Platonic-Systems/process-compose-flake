@@ -19,11 +19,11 @@
         # This adds a `self.packages.default`
         process-compose."default" = {
           settings = {
-            environment = [
-              "DATAFILE=data.sqlite"
-            ];
-            processes = {
+            environment = {
+              DATAFILE = "data.sqlite";
+            };
 
+            processes = {
               # Print a pony every 2 seconds, because why not.
               ponysay.command = ''
                 while true; do
