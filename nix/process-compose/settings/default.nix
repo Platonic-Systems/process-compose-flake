@@ -46,29 +46,15 @@ in
             example = "./pc.log";
           };
 
-          shell = {
-            shell_argument = mkOption {
-              type = types.str;
-              default = "-c";
-              example = "-c";
-            };
-            shell_command = mkOption {
-              type = types.str;
-              description = ''
-                The shell to use to run the process `command`s.
-
-                For reproducibility across systems, by default this uses
-                `pkgs.bash`.
-              '';
-              default = lib.getExe pkgs.bash;
-            };
-          };
-
           version = mkOption {
             type = types.nullOr types.str;
             default = null;
             example = "0.5";
           };
+
+          # NOTE: We don't allow the `shell` option because it meaningless in
+          # lieu of our use of pkgs.writeShellApplication (see command.nix).
+
         };
       };
       example =
