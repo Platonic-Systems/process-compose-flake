@@ -61,14 +61,24 @@ in
                 default = null;
                 description = "Enable or disable the TUI for the application.";
               };
-              extraCliArgs = mkOption {
-                type = types.str;
-                default = lib.optionalString (config.process-compose.port != null) "-p ${toString config.process-compose.port}" + 
-                          lib.optionalString (config.process-compose.tui != null) " -t=${lib.trivial.boolToString config.process-compose.tui}";
-                internal = true;
-                readOnly = true;
-                description = "Extra command-line arguments to pass to process-compose.";
-              };
+              extraCliArgs =
+                let
+                  cliArgsAttr = {
+                    port = "-p ${toString config.process-compose.port}";
+                    tui = "-t=${lib.boolToString config.process-compose.tui}";
+                  };
+                  getCliArgs =
+                    lib.mapAttrsToList
+                      (opt: arg: lib.optionalString (config.process-compose.${opt} != null) arg)
+                      cliArgsAttr;
+                in
+                mkOption {
+                  type = types.str;
+                  default = lib.concatStringsSep " " getCliArgs;
+                  internal = true;
+                  readOnly = true;
+                  description = "Extra command-line arguments to pass to process-compose.";
+                };
             };
           };
         };
@@ -82,7 +92,6 @@ in
           pkgs.runCommand "toYamlFile" { buildInputs = [ pkgs.yq-go ]; } ''
             yq -P '.' ${pkgs.writeTextFile { name = "tmp.json"; text = (builtins.toJSON attrs); }} > $out
           '';
-        disableTuiToString = if config.process-compose.disable-tui then "false" else "true";
         packages = pkgs.lib.mapAttrs
           (name: processComposeConfig:
             pkgs.writeShellApplication {
