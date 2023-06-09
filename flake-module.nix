@@ -50,18 +50,24 @@ in
                 '';
               };
               port = mkOption {
-                type = types.int;
+                type = types.nullOr types.int;
                 default = 8080;
                 description = ''
                   Port to serve process-compose's Swagger API on.
                 '';
               };
-              disable-tui = mkOption {
-                type = types.bool;
-                default = false;
-                description = ''
-                  Disable the process-compose TUI.
-                '';
+              tui = mkOption {
+                type = types.nullOr types.bool;
+                default = null;
+                description = "Enable or disable the TUI for the application.";
+              };
+              extraCliArgs = mkOption {
+                type = types.str;
+                default = lib.optionalString (config.process-compose.port != null) "-p ${toString config.process-compose.port}" + 
+                          lib.optionalString (config.process-compose.tui != null) " -t=${lib.trivial.boolToString config.process-compose.tui}";
+                internal = true;
+                readOnly = true;
+                description = "Extra command-line arguments to pass to process-compose.";
               };
             };
           };
@@ -83,7 +89,7 @@ in
               inherit name;
               runtimeInputs = [ config.process-compose.package ];
               text = ''
-                process-compose -p ${builtins.toString config.process-compose.port} -f ${toYAMLFile processComposeConfig} -t=${disableTuiToString} "$@"
+                process-compose -f ${toYAMLFile processComposeConfig} ${config.process-compose.extraCliArgs} "$@"
               '';
             }
           )
