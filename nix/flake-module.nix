@@ -23,68 +23,15 @@ in
           process-compose-flake: creates [process-compose](https://github.com/F1bonacc1/process-compose)
           executables from process-compose configurations written as Nix attribute sets.
         '';
-        type = types.attrsOf (submoduleWithPkgs ({ config, ... }: {
+        type = types.attrsOf (submoduleWithPkgs {
           imports = [
-            ./settings.nix
+            ./process-compose
           ];
-          options = {
-            package = mkOption {
-              type = types.package;
-              default = pkgs.process-compose;
-              defaultText = lib.literalExpression "pkgs.process-compose";
-              description = ''
-                The process-compose package to bundle up in the command package and flake app.
-              '';
-            };
-            port = mkOption {
-              type = types.nullOr types.int;
-              default = null;
-              description = ''
-                Port to serve process-compose's Swagger API on.
-              '';
-            };
-            tui = mkOption {
-              type = types.nullOr types.bool;
-              default = null;
-              description = "Enable or disable the TUI for the application.";
-            };
-            extraCliArgs =
-              let
-                cliArgsAttr = {
-                  port = "-p ${toString config.port}";
-                  tui = "-t=${lib.boolToString config.tui}";
-                };
-                getCliArgs =
-                  lib.mapAttrsToList
-                    (opt: arg: lib.optionalString (config.${opt} != null) arg)
-                    cliArgsAttr;
-              in
-              mkOption {
-                type = types.str;
-                default = lib.concatStringsSep " " getCliArgs;
-                internal = true;
-                readOnly = true;
-                description = ''
-                  Extra command-line arguments to pass to process-compose.
-                '';
-              };
-          };
-        }));
+        });
       };
 
       config.packages = lib.mapAttrs
-        (name: cfg:
-          pkgs.writeShellApplication {
-            inherit name;
-            runtimeInputs = [ cfg.package ];
-            text = ''
-              process-compose up \
-                -f ${cfg.settingsYaml} \
-                ${cfg.extraCliArgs} \
-                "$@"
-            '';
-          }
-        )
+        (name: cfg: cfg.outputs.package)
         config.process-compose;
     });
 }

@@ -1,7 +1,8 @@
 { name, config, pkgs, lib, ... }: 
 let 
   inherit (lib) types mkOption literalExpression;
-in {
+in 
+{
   options = {
     settings = mkOption {
       type = (pkgs.formats.yaml { }).type;
