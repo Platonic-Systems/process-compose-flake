@@ -1,2 +1,5 @@
 /example/data.sqlite
 /example/result
+
+/test/data.sqlite
+/test/result.txt
