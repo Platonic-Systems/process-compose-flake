@@ -77,7 +77,9 @@ in
                   default = lib.concatStringsSep " " getCliArgs;
                   internal = true;
                   readOnly = true;
-                  description = "Extra command-line arguments to pass to process-compose.";
+                  description = ''
+                    Extra command-line arguments to pass to process-compose.
+                  '';
                 };
             };
           };
@@ -98,7 +100,7 @@ in
               inherit name;
               runtimeInputs = [ config.process-compose.package ];
               text = ''
-                process-compose -f ${toYAMLFile processComposeConfig} ${config.process-compose.extraCliArgs} "$@"
+                process-compose up -f ${toYAMLFile processComposeConfig} ${config.process-compose.extraCliArgs} "$@"
               '';
             }
           )
