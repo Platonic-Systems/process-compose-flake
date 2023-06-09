@@ -6,7 +6,7 @@ in
 {
   imports = [
     ./cli.nix
-    ./settings.nix
+    ./settings
   ];
 
   options = {
@@ -24,6 +24,13 @@ in
         The final package that will run 'process-compose up' for this configuration.
       '';
     };
+    debug = mkOption {
+      type = types.bool;
+      default = false;
+      description = ''
+        Whether to dump the process-compose YAML file at start.
+      '';
+    };
   };
 
   config.outputs.package =
@@ -31,6 +38,7 @@ in
       inherit name;
       runtimeInputs = [ config.package ];
       text = ''
+        ${if config.debug then "cat ${config.outputs.settingsYaml}" else ""}
         process-compose up \
           -f ${config.outputs.settingsYaml} \
           ${config.outputs.upCommandArgs} \

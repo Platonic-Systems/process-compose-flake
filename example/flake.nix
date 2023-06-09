@@ -19,8 +19,11 @@
         # This adds a `self.packages.default`
         process-compose."default" = {
           settings = {
-            processes = {
+            environment = {
+              DATAFILE = "data.sqlite";
+            };
 
+            processes = {
               # Print a pony every 2 seconds, because why not.
               ponysay.command = ''
                 while true; do
@@ -30,17 +33,23 @@
               '';
 
               # Create .sqlite database from chinook database.
-              sqlite-init.command = ''
-                echo "`date`: Importing Chinook database..."
-                ${lib.getExe pkgs.sqlite} data.sqlite < ${inputs.chinookDb}/ChinookDatabase/DataSources/Chinook_Sqlite.sql
-                echo "`date`: Done."
-              '';
+              sqlite-init.command = pkgs.writeShellApplication {
+                name = "sqlite-init";
+                text = ''
+                  echo "$(date): Importing Chinook database ($DATAFILE) ..."
+                  ${lib.getExe pkgs.sqlite} "$DATAFILE" < ${inputs.chinookDb}/ChinookDatabase/DataSources/Chinook_Sqlite.sql
+                  echo "$(date): Done."
+                '';
+              };
 
               # Run sqlite-web on the local chinook database.
               sqlite-web = {
-                command = ''
-                  ${pkgs.sqlite-web}/bin/sqlite_web data.sqlite
-                '';
+                command = pkgs.writeShellApplication {
+                  name = "sqlite-web";
+                  text = ''
+                    ${pkgs.sqlite-web}/bin/sqlite_web "$DATAFILE"
+                  '';
+                };
                 # The 'depends_on' will have this process wait until the above one is completed.
                 depends_on."sqlite-init".condition = "process_completed_successfully";
               };

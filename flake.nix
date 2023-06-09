@@ -1,5 +1,5 @@
 {
-  outputs = { self, ... }: {
+  outputs = _: {
     flakeModule = ./nix/flake-module.nix;
 
      templates.default = {

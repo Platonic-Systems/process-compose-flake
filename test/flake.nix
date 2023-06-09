@@ -15,10 +15,13 @@
       perSystem = { pkgs, lib, ... }: {
         # This adds a `self.packages.default`
         process-compose."default" = {
+          debug = true;
           tui = false;
           settings = {
+            environment = [
+              "DATAFILE=data.sqlite"
+            ];
             processes = {
-
               # Create a simple sqlite db
               sqlite-init.command =
                 let
@@ -30,21 +33,28 @@
                     '';
                   };
                 in
-                ''
-                  echo "`date`: Creating database..."
-                  ${lib.getExe pkgs.sqlite} data.sqlite < ${sqlFile}
-                  echo "`date`: Done."
-                '';
+                pkgs.writeShellApplication {
+                  name = "sqlite-init";
+                  text = ''
+                    echo "$(date): Creating database ($DATAFILE) ..."
+                    ${lib.getExe pkgs.sqlite} "$DATAFILE" < ${sqlFile}
+                    echo "$(date): Done."
+                  '';
+                };
 
               # Query something, write to result.txt
               sqlite-query = {
-                command = ''
-                  ${lib.getExe pkgs.sqlite} data.sqlite \
-                    'select val from demo where val = "Hello"' \
-                    > result.txt
-                '';
+                command = pkgs.writeShellApplication {
+                  name = "sqlite-query";
+                  text = ''
+                    ${lib.getExe pkgs.sqlite} "$DATAFILE" \
+                      'select val from demo where val = "Hello"' \
+                      > result.txt
+                  '';
+                };
                 # The 'depends_on' will have this process wait until the above one is completed.
                 depends_on."sqlite-init".condition = "process_completed_successfully";
+                availability.restart = "no";
               };
             };
           };
