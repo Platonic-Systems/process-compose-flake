@@ -33,25 +33,19 @@
                     '';
                   };
                 in
-                pkgs.writeShellApplication {
-                  name = "sqlite-init";
-                  text = ''
-                    echo "$(date): Creating database ($DATAFILE) ..."
-                    ${lib.getExe pkgs.sqlite} "$DATAFILE" < ${sqlFile}
-                    echo "$(date): Done."
-                  '';
-                };
+                ''
+                  echo "$(date): Creating database ($DATAFILE) ..."
+                  ${lib.getExe pkgs.sqlite} "$DATAFILE" < ${sqlFile}
+                  echo "$(date): Done."
+                '';
 
               # Query something, write to result.txt
               sqlite-query = {
-                command = pkgs.writeShellApplication {
-                  name = "sqlite-query";
-                  text = ''
-                    ${lib.getExe pkgs.sqlite} "$DATAFILE" \
-                      'select val from demo where val = "Hello"' \
-                      > result.txt
-                  '';
-                };
+                command = ''
+                  ${lib.getExe pkgs.sqlite} "$DATAFILE" \
+                    'select val from demo where val = "Hello"' \
+                    > result.txt
+                '';
                 # The 'depends_on' will have this process wait until the above one is completed.
                 depends_on."sqlite-init".condition = "process_completed_successfully";
                 availability.restart = "no";

@@ -52,14 +52,15 @@ in
               default = "-c";
               example = "-c";
             };
-            shell_command = import ./command.nix { inherit lib; } {
+            shell_command = mkOption {
+              type = types.str;
               description = ''
                 The shell to use to run the process `command`s.
 
                 For reproducibility across systems, by default this uses
                 `pkgs.bash`.
               '';
-              default = pkgs.bash;
+              default = lib.getExe pkgs.bash;
             };
           };
 

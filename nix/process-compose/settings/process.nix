@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ name, pkgs, lib, ... }:
 
 let
   inherit (lib) types mkOption;
@@ -9,12 +9,13 @@ let
 in
 {
   options = {
-    command = import ./command.nix { inherit lib; } {
+    command = import ./command.nix { inherit name pkgs lib; } {
       description = ''
-        The command that runs this process
+        The command or script or package that runs this process
 
-        If a package is given, its executable is used as the command. This is
-        useful to pass in a `writeShellApplication.`
+        If a package is given, its executable is used as the command. Otherwise,
+        the command string is wrapped in a `pkgs.writeShellApplication` which
+        uses ShellCheck and runs the command in bash.
       '';
     };
 
