@@ -6,7 +6,7 @@ in
 {
   imports = [
     ./cli.nix
-    ./settings.nix
+    ./settings
   ];
 
   options = {
