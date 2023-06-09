@@ -17,24 +17,27 @@ in
       default = null;
       description = "Enable or disable the TUI for the application.";
     };
-    extraCliArgs =
+    outputs.upCommandArgs =
       let
         cliArgsAttr = {
           port = "-p ${toString config.port}";
           tui = "-t=${lib.boolToString config.tui}";
         };
-        getCliArgs =
+        args =
           lib.mapAttrsToList
             (opt: arg: lib.optionalString (config.${opt} != null) arg)
             cliArgsAttr;
       in
       mkOption {
         type = types.str;
-        default = lib.concatStringsSep " " getCliArgs;
+        default = lib.concatStringsSep " " args;
         internal = true;
         readOnly = true;
         description = ''
-          Extra command-line arguments to pass to process-compose.
+          Additional CLI arguments to pass to 'process-compose up'.
+
+          Note: `-f` option is always included, pointing to generated config.
+          And is thus not handled by this option.
         '';
       };
   };

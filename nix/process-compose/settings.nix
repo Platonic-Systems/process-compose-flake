@@ -26,13 +26,13 @@ in
       '';
     };
 
-    settingsYaml = mkOption {
+    outputs.settingsYaml = mkOption {
       type = types.attrsOf types.raw;
       internal = true;
     };
   };
 
-  config.settingsYaml =
+  config.outputs.settingsYaml =
     let
       toYAMLFile =
         attrs:

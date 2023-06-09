@@ -32,8 +32,8 @@ in
       runtimeInputs = [ config.package ];
       text = ''
         process-compose up \
-          -f ${config.settingsYaml} \
-          ${config.extraCliArgs} \
+          -f ${config.outputs.settingsYaml} \
+          ${config.outputs.upCommandArgs} \
           "$@"
       '';
     };
