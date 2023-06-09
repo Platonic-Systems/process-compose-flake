@@ -13,10 +13,10 @@
         inputs.process-compose-flake.flakeModule
       ];
       perSystem = { pkgs, lib, ... }: {
-        process-compose = {
+        # This adds a `self.packages.default`
+        process-compose."default" = {
           tui = false;
-          # This adds a `self.packages.default`
-          configs."default" = {
+          settings = {
             processes = {
 
               # Create a simple sqlite db

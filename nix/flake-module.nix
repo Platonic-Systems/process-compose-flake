@@ -17,7 +17,7 @@ in
             process-compose-flake: creates [process-compose](https://github.com/F1bonacc1/process-compose)
             executables from process-compose configurations written as Nix attribute sets.
           '';
-          type = types.submodule {
+          type = types.attrsOf (types.submodule ({ config, ... }: {
             options = {
               package = mkOption {
                 type = types.package;
@@ -27,11 +27,10 @@ in
                   The process-compose package to bundle up in the command package and flake app.
                 '';
               };
-              configs = mkOption {
-                type = types.attrsOf (pkgs.formats.yaml { }).type;
-                default = { };
+              settings = mkOption {
+                type = (pkgs.formats.yaml { }).type;
                 example =
-                  # apps.${system}.watch-server and packages.${system}.watch-server become available
+                  # packages.${system}.watch-server becomes available
                   # execute `nix run .#watch-server` or incude packages.${system}.watch-server
                   # as a nativeBuildInput to your devShell
                   literalExpression ''
@@ -64,12 +63,12 @@ in
               extraCliArgs =
                 let
                   cliArgsAttr = {
-                    port = "-p ${toString config.process-compose.port}";
-                    tui = "-t=${lib.boolToString config.process-compose.tui}";
+                    port = "-p ${toString config.port}";
+                    tui = "-t=${lib.boolToString config.tui}";
                   };
                   getCliArgs =
                     lib.mapAttrsToList
-                      (opt: arg: lib.optionalString (config.process-compose.${opt} != null) arg)
+                      (opt: arg: lib.optionalString (config.${opt} != null) arg)
                       cliArgsAttr;
                 in
                 mkOption {
@@ -82,7 +81,7 @@ in
                   '';
                 };
             };
-          };
+          }));
         };
       });
   };
@@ -95,16 +94,19 @@ in
             yq -P '.' ${pkgs.writeTextFile { name = "tmp.json"; text = (builtins.toJSON attrs); }} > $out
           '';
         packages = pkgs.lib.mapAttrs
-          (name: processComposeConfig:
+          (name: cfg:
             pkgs.writeShellApplication {
               inherit name;
-              runtimeInputs = [ config.process-compose.package ];
+              runtimeInputs = [ cfg.package ];
               text = ''
-                process-compose up -f ${toYAMLFile processComposeConfig} ${config.process-compose.extraCliArgs} "$@"
+                process-compose up \
+                  -f ${toYAMLFile cfg.settings} \
+                  ${cfg.extraCliArgs} \
+                  "$@"
               '';
             }
           )
-          config.process-compose.configs;
+          config.process-compose;
       in
       {
         inherit packages;
