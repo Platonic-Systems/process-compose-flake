@@ -14,6 +14,7 @@
       ];
       perSystem = { pkgs, lib, ... }: {
         process-compose = {
+          tui = false;
           # This adds a `self.packages.default`
           configs."default" = {
             processes = {
