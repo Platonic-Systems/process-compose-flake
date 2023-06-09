@@ -18,21 +18,22 @@
           configs."default" = {
             processes = {
 
-              # Create .sqlite database from chinook database.
-              sqlite-init.command = 
-              let
-                sqlFile = pkgs.writeTextFile {
-                  name = "data.sql";
-                  text = ''
-                    CREATE TABLE demo (val TEXT);
-                    INSERT INTO demo VALUES ("Hello");
-                  '';
-                };
-              in ''
-                echo "`date`: Creating database..."
-                ${lib.getExe pkgs.sqlite} data.sqlite < ${sqlFile}
-                echo "`date`: Done."
-              '';
+              # Create a simple sqlite db
+              sqlite-init.command =
+                let
+                  sqlFile = pkgs.writeTextFile {
+                    name = "data.sql";
+                    text = ''
+                      CREATE TABLE demo (val TEXT);
+                      INSERT INTO demo VALUES ("Hello");
+                    '';
+                  };
+                in
+                ''
+                  echo "`date`: Creating database..."
+                  ${lib.getExe pkgs.sqlite} data.sqlite < ${sqlFile}
+                  echo "`date`: Done."
+                '';
 
               # Query something, write to result.txt
               sqlite-query = {
