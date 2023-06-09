@@ -15,9 +15,10 @@
       perSystem = { pkgs, lib, ... }: {
         # This adds a `self.packages.default`
         process-compose."default" = {
+          debug = true;
           tui = false;
           settings = {
-            environment = [ 
+            environment = [
               "DATAFILE=data.sqlite"
             ];
             processes = {
