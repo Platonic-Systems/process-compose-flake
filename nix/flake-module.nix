@@ -1,12 +1,11 @@
-{ self, lib, flake-parts-lib, ... }:
+{ lib, flake-parts-lib, ... }:
 let
   inherit (flake-parts-lib)
     mkPerSystemOption;
   inherit (lib)
     mdDoc
     mkOption
-    types
-    literalExpression;
+    types;
 in
 {
   options.perSystem = mkPerSystemOption ({ config, pkgs, lib, ... }:
