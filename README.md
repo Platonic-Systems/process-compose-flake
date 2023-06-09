@@ -27,8 +27,8 @@ Let's say you want to have a `devShell` that makes a command `watch-server` avai
 
 To achieve this using `process-compose-flake` you can simply add the following code to the `perSystem` function in your `flake-parts` flake.
 ```nix
-process-compose.configs = {
-  watch-server.processes = {
+process-compose.watch-server = {
+  settings.processes = {
     backend-server.command = "${self'.apps.backend-server.program} --port 9000";
     frontend-server.command = "${self'.apps.frontend-server.program} --port 9001";
     proxy-server.command =

@@ -16,9 +16,9 @@
         inputs.process-compose-flake.flakeModule
       ];
       perSystem = { pkgs, lib, ... }: {
-        process-compose = {
-          # This adds a `self.packages.default`
-          configs."default" = {
+        # This adds a `self.packages.default`
+        process-compose."default" = {
+          settings = {
             processes = {
 
               # Print a pony every 2 seconds, because why not.
