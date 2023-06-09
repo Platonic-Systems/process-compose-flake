@@ -107,8 +107,8 @@ in
         lib.pipe attrs [ f f ];
       toYAMLFile =
         attrs:
-        pkgs.runCommand "toYamlFile" { buildInputs = [ pkgs.yq-go ]; } ''
-          yq -P '.' ${pkgs.writeTextFile { name = "process-compose-${name}.json"; text = (builtins.toJSON attrs); }} > $out
+        pkgs.runCommand "${name}.yaml" { buildInputs = [ pkgs.yq-go ]; } ''
+          yq -oy -P '.' ${pkgs.writeTextFile { name = "process-compose-${name}.json"; text = (builtins.toJSON attrs); }} > $out
         '';
     in
     toYAMLFile (removeNullAndEmptyAttrs config.settings);
