@@ -18,6 +18,11 @@
       perSystem = { pkgs, lib, ... }: {
         # This adds a `self.packages.default`
         process-compose."default" = {
+          imports = [
+            inputs.process-compose-flake.processComposeModules.services
+          ];
+          hello.enable = true;
+
           settings = {
             environment = {
               DATAFILE = "data.sqlite";
