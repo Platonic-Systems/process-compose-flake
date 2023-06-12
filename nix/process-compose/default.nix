@@ -1,8 +1,8 @@
-{ name, config, pkgs, lib, ... }: 
+{ name, config, pkgs, lib, ... }:
 
-let 
+let
   inherit (lib) types mkOption;
-in 
+in
 {
   imports = [
     ./cli.nix

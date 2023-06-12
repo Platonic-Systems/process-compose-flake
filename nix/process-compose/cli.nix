@@ -1,8 +1,8 @@
-{ config, lib, ... }: 
+{ config, lib, ... }:
 
-let 
+let
   inherit (lib) types mkOption;
-in 
+in
 {
   options = {
     port = mkOption {
