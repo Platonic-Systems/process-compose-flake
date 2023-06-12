@@ -12,7 +12,7 @@ in
     let
       submoduleWithPkgs = mod:
         types.submoduleWith {
-          specialArgs = { inherit pkgs lib; };
+          specialArgs = { inherit pkgs lib submoduleWithPkgs; };
           modules = [ mod ];
         };
     in

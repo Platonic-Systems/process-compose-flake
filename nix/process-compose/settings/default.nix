@@ -1,11 +1,6 @@
-{ name, config, pkgs, lib, ... }:
+{ name, config, pkgs, lib, submoduleWithPkgs, ... }:
 let
   inherit (lib) types mkOption literalExpression;
-  submoduleWithPkgs = mod:
-    types.submoduleWith {
-      specialArgs = { inherit pkgs lib; };
-      modules = [ mod ];
-    };
 in
 {
   options = {
