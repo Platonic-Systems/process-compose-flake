@@ -22,6 +22,7 @@
             inputs.process-compose-flake.processComposeModules.services
           ];
           hello.enable = true;
+          hello.greeting = "Welcome to sqlite-web demo";
 
           settings = {
             environment = {

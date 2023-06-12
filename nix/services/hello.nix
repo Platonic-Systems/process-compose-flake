@@ -18,7 +18,7 @@
   config.settings = lib.mkIf config.hello.enable {
     processes.${config.hello.name}.command = ''
       set -x
-      ${lib.getExe config.hello.package} -g ${config.hello.greeting}
+      ${lib.getExe config.hello.package} -g "${config.hello.greeting}"
     '';
   };
 }
