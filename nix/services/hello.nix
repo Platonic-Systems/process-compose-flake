@@ -1,7 +1,7 @@
 { pkgs, lib, config, ... }:
 
 {
-  options.hello = {
+  options.services.hello = {
     enable = lib.mkEnableOption "hello";
     name = lib.mkOption {
       type = lib.types.str;
@@ -15,7 +15,7 @@
       description = "The greeting to use";
     };
   };
-  config = let cfg = config.hello; in lib.mkIf cfg.enable {
+  config = let cfg = config.services.hello; in lib.mkIf cfg.enable {
     settings.processes.${cfg.name}.command = ''
       set -x
       ${lib.getExe cfg.package} -g "${cfg.greeting}"

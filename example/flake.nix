@@ -24,7 +24,7 @@
           imports = [
             inputs.process-compose-flake.processComposeModules.services
           ];
-          hello = {
+          services.hello = {
             enable = true;
             name = "welcome";
             greeting = "Welcome to sqlite-web demo";

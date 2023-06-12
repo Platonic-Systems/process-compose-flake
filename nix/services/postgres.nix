@@ -1,7 +1,7 @@
 { pkgs, lib, config, ... }:
 
 {
-  options.postgres = lib.mkOption {
+  options.services.postgres = lib.mkOption {
     description = ''
       Enable postgresql server
     '';
@@ -23,7 +23,7 @@
       };
     });
   };
-  config = let cfg = config.postgres; in lib.mkIf cfg.enable {
+  config = let cfg = config.services.postgres; in lib.mkIf cfg.enable {
     # TODO: Bring over https://github.com/cachix/devenv/blob/main/src/modules/services/postgres.nix
     settings.processes = {
       "${cfg.name}-init".command = ''
