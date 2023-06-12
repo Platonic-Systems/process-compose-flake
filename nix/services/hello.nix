@@ -15,12 +15,10 @@
       description = "The greeting to use";
     };
   };
-  config =
-    let cfg = config.hello;
-    in lib.mkIf cfg.enable {
-      settings.processes.${cfg.name}.command = ''
-        set -x
-        ${lib.getExe cfg.package} -g "${cfg.greeting}"
-      '';
-    };
+  config = let cfg = config.hello; in lib.mkIf cfg.enable {
+    settings.processes.${cfg.name}.command = ''
+      set -x
+      ${lib.getExe cfg.package} -g "${cfg.greeting}"
+    '';
+  };
 }

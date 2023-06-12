@@ -18,12 +18,19 @@
       perSystem = { pkgs, lib, ... }: {
         # This adds a `self.packages.default`
         process-compose."default" = {
+          # process-compose-flake exports some handy services. You may use them
+          # as follows: Import them in `imports`, and set the corresponding
+          # option.
           imports = [
             inputs.process-compose-flake.processComposeModules.services
           ];
-          hello.enable = true;
-          hello.greeting = "Welcome to sqlite-web demo";
+          hello = {
+            enable = true;
+            name = "welcome";
+            greeting = "Welcome to sqlite-web demo";
+          };
 
+          # Raw settings (process-compose.yaml) can be specified here.
           settings = {
             environment = {
               DATAFILE = "data.sqlite";
