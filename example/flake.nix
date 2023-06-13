@@ -46,6 +46,12 @@
                 '';
                 # The 'depends_on' will have this process wait until the above one is completed.
                 depends_on."sqlite-init".condition = "process_completed_successfully";
+                readiness_probe.http_get = {
+                  scheme = "http";
+                  host = "localhost";
+                  path = "/";
+                  port = 8213;
+                };
               };
             };
           };
