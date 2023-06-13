@@ -57,12 +57,10 @@
           };
 
           testScript = ''
-            machine.wait_for_unit("default.target")
-            machine.succeed("""
-              sleep 10  # HACK
-              journalctl -u process-compose.service
-              curl -v http://localhost:8213/
-            """)
+            process_compose.wait(lambda procs: 
+              procs["sqlite-web"]["is_ready"] == "Ready"
+            )
+            machine.succeed("curl -v http://localhost:8213/")
           '';
         };
       };
