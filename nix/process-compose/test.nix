@@ -17,12 +17,11 @@ in
     };
     outputs.check = mkOption {
       type = types.nullOr types.package;
-      default = if config.testScript == null then null else 
+      default = if config.testScript == null then null else
         pkgs.nixosTest {
           inherit (config) testScript;
           name = "process-compose-${name}-test";
           nodes.machine = {
-            environment.systemPackages = [ pkgs.bash ]; # process-compose requires it.
             systemd.services.process-compose = {
               enable = true;
               wantedBy = [ "default.target" ];
@@ -32,9 +31,7 @@ in
                   name = "process-compose-${name}";
                   text = ''
                     set -x
-                    echo "Launching procese-compose on ${name} ..."
-                    # make bash available to process-compose
-                    export PATH=/run/current-system/sw/bin:$PATH
+                    echo "Launching process-compose on ${name} ..."
                     ${lib.getExe config.outputs.package} -t=false
                   '';
                 });
@@ -42,6 +39,6 @@ in
             };
           };
         };
-    }; 
+    };
   };
 }
