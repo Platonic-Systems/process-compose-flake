@@ -17,7 +17,7 @@
       ];
       perSystem = { self', pkgs, lib, ... }: {
         # This adds a `self.packages.default`
-        process-compose."default" = {
+        process-compose."default" = let port = 8213; in {
           settings = {
             environment = {
               DATAFILE = "data.sqlite";
@@ -42,15 +42,13 @@
               # Run sqlite-web on the local chinook database.
               sqlite-web = {
                 command = ''
-                  ${pkgs.sqlite-web}/bin/sqlite_web --port 8213 "$DATAFILE"
+                  ${pkgs.sqlite-web}/bin/sqlite_web --port ${builtins.toString port} "$DATAFILE"
                 '';
                 # The 'depends_on' will have this process wait until the above one is completed.
                 depends_on."sqlite-init".condition = "process_completed_successfully";
                 readiness_probe.http_get = {
-                  scheme = "http";
                   host = "localhost";
-                  path = "/";
-                  port = 8213;
+                  inherit port;
                 };
               };
             };
@@ -60,7 +58,7 @@
             process_compose.wait(lambda procs: 
               procs["sqlite-web"]["is_ready"] == "Ready"
             )
-            machine.succeed("curl -v http://localhost:8213/")
+            machine.succeed("curl -v http://localhost:${builtins.toString port}/")
           '';
         };
       };
