@@ -29,9 +29,14 @@ in
         });
       };
 
-      config.packages = lib.mapAttrs
-        (name: cfg: cfg.outputs.package)
-        config.process-compose;
+      config = {
+        packages = lib.mapAttrs
+          (name: cfg: cfg.outputs.package)
+          config.process-compose;
+        checks = lib.mapAttrs
+          (name: cfg: cfg.outputs.check)
+          config.process-compose;
+      };
     });
 }
 

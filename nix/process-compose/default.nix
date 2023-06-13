@@ -7,6 +7,7 @@ in
   imports = [
     ./cli.nix
     ./settings
+    ./test.nix
   ];
 
   options = {
