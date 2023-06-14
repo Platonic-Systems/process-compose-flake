@@ -73,14 +73,9 @@ in
               wantedBy = [ "default.target" ];
               serviceConfig = {
                 WorkingDirectory = "/tmp";
-                ExecStart = lib.getExe (pkgs.writeShellApplication {
-                  name = "process-compose-${name}";
-                  text = ''
-                    set -x
-                    echo "Launching process-compose on ${name} ..."
-                    ${lib.getExe config.outputs.package} -t=false
-                  '';
-                });
+                ExecStart = ''
+                  ${lib.getExe config.outputs.package} -t=false
+                '';
               };
             };
           };
