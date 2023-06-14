@@ -11,7 +11,7 @@ let
         return json.loads(
           machine.succeed("${lib.getExe pkgs.xh} get " + url))
 
-      def wait(self, ready, timeout_mins=1):
+      def wait_until(self, ready, timeout_mins=1):
         import time
         import json
         machine.wait_for_unit("default.target")
@@ -48,11 +48,17 @@ in
 
         Useful if you want to test your configuration in CI.
 
-        The testScript will have access to `process_comose.wait` function that
-        it can be used to get the running process information, after waiting for
+        The testScript will have access to `process_compose.wait` function that
+        can be used to get the running process information, after waiting for
         the specified readiness status.
       '';
       default = null;
+      example = ''
+        process_compose.wait_until(lambda procs:
+          procs["netdata"]["is_ready"] == "Ready"
+        )
+        machine.succeed("curl -v http://localhost:19999/")
+      '';
     };
     outputs.check = mkOption {
       type = types.nullOr types.package;

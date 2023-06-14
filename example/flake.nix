@@ -55,7 +55,7 @@
           };
 
           testScript = ''
-            process_compose.wait(lambda procs: 
+            process_compose.wait_until(lambda procs:
               procs["sqlite-web"]["is_ready"] == "Ready"
             )
             machine.succeed("curl -v http://localhost:${builtins.toString port}/")
