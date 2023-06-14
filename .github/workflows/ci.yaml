@@ -14,5 +14,5 @@ jobs:
       - name: Run test
         id: test
         run: |
-          ./test/test.sh
+          ./test.sh
 
