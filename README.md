@@ -66,3 +66,7 @@ You can enter your devShell by running `nix develop` and run `watch-server` to r
 ## Alternatives
 
 For a similar (and less feature-rich) module that uses a `Procfile`-based runner, see https://github.com/srid/proc-flake
+
+## Contributing
+
+Please run `./test.sh` on a NixOS machine to run the full suite of tests before pushing changes to the main branch. Our CI (Github Actions) cannot do this yet.
