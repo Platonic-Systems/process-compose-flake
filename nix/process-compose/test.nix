@@ -51,6 +51,9 @@ in
         The testScript will have access to `process_compose.wait` function that
         can be used to get the running process information, after waiting for
         the specified readiness status.
+
+        The check is added only on Linux, inasmuch as nixosTest is not available
+        on Darwin.
       '';
       default = null;
       example = ''
@@ -63,7 +66,7 @@ in
     outputs.check = mkOption {
       type = types.nullOr types.package;
       default =
-        if config.testScript == null then null else
+        if (config.testScript == null || !pkgs.stdenv.isLinux) then null else
         pkgs.nixosTest {
           testScript = testLibrary + "\n" + config.testScript;
           name = "process-compose-${name}-test";
