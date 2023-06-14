@@ -7,4 +7,6 @@ cd ./example
 nix build -L --no-link --print-out-paths --override-input process-compose-flake ..
 
 # On NixOS, run the VM tests to test runtime behaviour
-nix flake check -L --override-input process-compose-flake ..
+if command -v nixos-rebuild &> /dev/null; then
+  nix flake check -L --override-input process-compose-flake ..
+fi
