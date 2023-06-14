@@ -15,9 +15,9 @@
       imports = [
         inputs.process-compose-flake.flakeModule
       ];
-      perSystem = { pkgs, lib, ... }: {
+      perSystem = { self', pkgs, lib, ... }: {
         # This adds a `self.packages.default`
-        process-compose."default" = {
+        process-compose."default" = let port = 8213; in {
           settings = {
             environment = {
               DATAFILE = "data.sqlite";
@@ -42,13 +42,24 @@
               # Run sqlite-web on the local chinook database.
               sqlite-web = {
                 command = ''
-                  ${pkgs.sqlite-web}/bin/sqlite_web "$DATAFILE"
+                  ${pkgs.sqlite-web}/bin/sqlite_web --port ${builtins.toString port} "$DATAFILE"
                 '';
                 # The 'depends_on' will have this process wait until the above one is completed.
                 depends_on."sqlite-init".condition = "process_completed_successfully";
+                readiness_probe.http_get = {
+                  host = "localhost";
+                  inherit port;
+                };
               };
             };
           };
+
+          testScript = ''
+            process_compose.wait_until(lambda procs:
+              procs["sqlite-web"]["is_ready"] == "Ready"
+            )
+            machine.succeed("curl -v http://localhost:${builtins.toString port}/")
+          '';
         };
       };
     };
