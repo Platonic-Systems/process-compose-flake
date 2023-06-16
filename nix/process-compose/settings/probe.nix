@@ -37,7 +37,7 @@ in
     };
     exec = mkOption {
       type = types.nullOr (types.submodule {
-        command = mkOption {
+        options.command = mkOption {
           type = types.str;
           example = "ps -ef | grep -v grep | grep my-proccess";
         };
