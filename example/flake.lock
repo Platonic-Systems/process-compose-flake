@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "chinookDb": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1645319735,
+        "narHash": "sha256-mrRf6ih55mHpaxiw+owvxLPVzRIbxxaj2rWEmLI5pZQ=",
+        "owner": "lerocha",
+        "repo": "chinook-database",
+        "rev": "e7e6d5f008e35d3f89d8b8a4f8d38e3bfa7e34bd",
+        "type": "github"
+      },
+      "original": {
+        "owner": "lerocha",
+        "repo": "chinook-database",
+        "type": "github"
+      }
+    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": "nixpkgs-lib"
@@ -54,11 +70,11 @@
     },
     "process-compose-flake": {
       "locked": {
-        "lastModified": 1680797953,
-        "narHash": "sha256-lFYbfId1IX6jh/wUf+gt3LyvE9HblS4hcBQcougSzX0=",
+        "lastModified": 1686961588,
+        "narHash": "sha256-51xhJbIpI+ikdsi7eYW1Cop4ldZjcU+XIYb4+TMJF3A=",
         "owner": "Platonic-Systems",
         "repo": "process-compose-flake",
-        "rev": "aee1b8d126a5efe5945513eb2fb343f3d68dca4b",
+        "rev": "a108d4813697ff5cbe9e714b30068e7aca79c87c",
         "type": "github"
       },
       "original": {
@@ -69,27 +85,11 @@
     },
     "root": {
       "inputs": {
+        "chinookDb": "chinookDb",
         "flake-parts": "flake-parts",
         "nixpkgs": "nixpkgs",
         "process-compose-flake": "process-compose-flake",
-        "chinookDb": "chinookDb",
         "systems": "systems"
-      }
-    },
-    "chinookDb": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1645319735,
-        "narHash": "sha256-mrRf6ih55mHpaxiw+owvxLPVzRIbxxaj2rWEmLI5pZQ=",
-        "owner": "lerocha",
-        "repo": "chinook-database",
-        "rev": "e7e6d5f008e35d3f89d8b8a4f8d38e3bfa7e34bd",
-        "type": "github"
-      },
-      "original": {
-        "owner": "lerocha",
-        "repo": "chinook-database",
-        "type": "github"
       }
     },
     "systems": {
