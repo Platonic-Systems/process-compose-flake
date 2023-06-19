@@ -1,3 +1,4 @@
+# Based on https://github.com/cachix/devenv/blob/main/src/modules/services/postgres.nix
 { pkgs, lib, config, ... }:
 
 let
@@ -18,7 +19,7 @@ in
           description = "Unique process name";
         };
 
-        package = lib.mkPackageOption pkgs "postgresql_12" { };
+        package = lib.mkPackageOption pkgs "postgresql" { };
         extensions = lib.mkOption {
           type = with types; nullOr (functionTo (listOf package));
           default = null;
@@ -41,7 +42,7 @@ in
         dataDir = lib.mkOption {
           type = lib.types.str;
           default = "./data/${config.name}";
-          description = "Postgres data directory";
+          description = "The DB data directory";
         };
         listen_addresses = lib.mkOption {
           type = lib.types.str;
@@ -154,7 +155,6 @@ in
     });
   };
   config = let cfg = config.services.postgres; in lib.mkIf cfg.enable {
-    # TODO: Bring over https://github.com/cachix/devenv/blob/main/src/modules/services/postgres.nix
     settings.processes =
       let
         postgresPkg =
@@ -172,7 +172,6 @@ in
         # DB initialization
         "${cfg.name}-init".command =
           let
-
             setupInitialDatabases =
               if cfg.initialDatabases != [ ] then
                 (lib.concatMapStrings
