@@ -71,6 +71,9 @@ in
           testScript = testLibrary + "\n" + config.testScript;
           name = "process-compose-${name}-test";
           nodes.machine = {
+            users.users.tester = {
+              isNormalUser = true;
+            };
             systemd.services."process-compose-${name}" = {
               enable = true;
               wantedBy = [ "default.target" ];
@@ -79,6 +82,7 @@ in
                 ExecStart = ''
                   ${lib.getExe config.outputs.package} -t=false
                 '';
+                User = "tester";
               };
             };
           };
