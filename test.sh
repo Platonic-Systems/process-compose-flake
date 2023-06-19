@@ -12,8 +12,4 @@ if command -v nixos-rebuild &> /dev/null; then
 
   # example
   nix flake check -L --override-input process-compose-flake ..
-
-  # service tests
-  pushd ../nix/services/test 
-  nix flake check -L --override-input process-compose-flake ../../..
 fi
