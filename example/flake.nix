@@ -17,7 +17,7 @@
       ];
       perSystem = { self', pkgs, lib, ... }: {
         # This adds a `self.packages.default`
-        process-compose."default" = let port = 8213; in  {
+        process-compose."default" = let port = 8213; in {
           # process-compose-flake exports some handy services. You may use them
           # as follows: Import them in `imports`, and set the corresponding
           # option.
