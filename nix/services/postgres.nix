@@ -264,7 +264,7 @@ in
             set -x
             export PATH="${postgresPkg}"/bin:$PATH
             export LOCKDIR="/tmp"
-            postgres -k $LOCKDIR -i -h 127.0.0.1 -D ${cfg.dataDir} 
+            postgres -k $LOCKDIR -D ${cfg.dataDir}
           '';
           depends_on."${cfg.name}-init".condition = "process_completed_successfully";
           # SIGINT (= 2) for faster shutdown: https://www.postgresql.org/docs/current/server-shutdown.html
