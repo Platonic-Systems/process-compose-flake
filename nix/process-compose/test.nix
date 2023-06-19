@@ -71,7 +71,7 @@ in
           testScript = testLibrary + "\n" + config.testScript;
           name = "process-compose-${name}-test";
           nodes.machine = {
-            systemd.services.process-compose = {
+            systemd.services."process-compose-${name}" = {
               enable = true;
               wantedBy = [ "default.target" ];
               serviceConfig = {
