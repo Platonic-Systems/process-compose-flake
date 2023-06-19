@@ -33,11 +33,13 @@ in
         packages = lib.mapAttrs
           (name: cfg: cfg.outputs.package)
           config.process-compose;
-        checks = 
-          let checks' = lib.mapAttrs
-            (name: cfg: cfg.outputs.check)
-            config.process-compose;
-          in lib.filterAttrs (_: v: v != null) checks';
+        checks =
+          let
+            checks' = lib.mapAttrs
+              (name: cfg: cfg.outputs.check)
+              config.process-compose;
+          in
+          lib.filterAttrs (_: v: v != null) checks';
       };
     });
 }
