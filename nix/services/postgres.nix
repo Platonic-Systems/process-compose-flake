@@ -172,17 +172,6 @@ in
         # DB initialization
         "${cfg.name}-init".command =
           let
-            toStr = value:
-              if true == value then
-                "yes"
-              else if false == value then
-                "no"
-              else if lib.isString value then
-                "'${lib.replaceStrings [ "'" ] [ "''" ] value}'"
-              else
-                toString value;
-            configFile = pkgs.writeText "postgresql.conf" (lib.concatStringsSep "\n"
-              (lib.mapAttrsToList (n: v: "${n} = ${toStr v}") cfg.settings));
 
             setupInitialDatabases =
               if cfg.initialDatabases != [ ] then
@@ -227,6 +216,7 @@ in
               else
                 lib.optionalString cfg.createDatabase ''
                   echo "CREATE DATABASE ''${USER:-$(id -nu)};" | postgres --single -E postgres '';
+
             runInitialScript =
               if cfg.initialScript != null then
                 ''
@@ -234,19 +224,38 @@ in
                 ''
               else
                 "";
+
+            toStr = value:
+              if true == value then
+                "yes"
+              else if false == value then
+                "no"
+              else if lib.isString value then
+                "'${lib.replaceStrings [ "'" ] [ "''" ] value}'"
+              else
+                toString value;
+
+            configFile = pkgs.writeText "postgresql.conf" (lib.concatStringsSep "\n"
+              (lib.mapAttrsToList (n: v: "${n} = ${toStr v}") cfg.settings));
+
+            setupScript = pkgs.writeShellScriptBin "setup-postgres" ''
+              set -euo pipefail
+              export PATH=${postgresPkg}/bin:${pkgs.coreutils}/bin
+
+              if [[ ! -d "$PGDATA" ]]; then
+                initdb ${lib.concatStringsSep " " cfg.initdbArgs}
+                ${setupInitialDatabases}
+
+                ${runInitialScript}
+              fi
+
+              # Setup config
+              cp ${configFile} "$PGDATA/postgresql.conf"
+            '';
           in
           ''
-            export PATH="${postgresPkg}"/bin:$PATH
             export PGDATA="${cfg.dataDir}"
-            if [[ ! -d "$PGDATA" ]]; then
-              initdb ${lib.concatStringsSep " " cfg.initdbArgs}
-              ${setupInitialDatabases}
-
-              ${runInitialScript}
-            fi
-
-            # Setup config
-            cp ${configFile} "$PGDATA/postgresql.conf"
+            ${lib.getExe setupScript}
           '';
 
         # DB process
