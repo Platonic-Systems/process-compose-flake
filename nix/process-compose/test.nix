@@ -79,10 +79,16 @@ in
               wantedBy = [ "default.target" ];
               serviceConfig = {
                 WorkingDirectory = "/tmp";
-                ExecStart = ''
-                  ${lib.getExe config.outputs.package} -t=false
-                '';
                 User = "tester";
+                ExecStart = lib.getExe (pkgs.writeShellApplication {
+                  name = "process-compose-${name}";
+                  text = ''
+                    set -x
+                    ${lib.getExe config.outputs.package} -t=false
+                    echo "unexpected: process-compose exited successfully (all processes are completed?)"
+                    exit 2
+                  '';
+                });
               };
             };
           };
