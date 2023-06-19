@@ -17,7 +17,27 @@ in
           default = "postgres";
           description = "Unique process name";
         };
+
         package = lib.mkPackageOption pkgs "postgresql_12" { };
+        extensions = lib.mkOption {
+          type = with types; nullOr (functionTo (listOf package));
+          default = null;
+          example = lib.literalExpression ''
+            extensions: [
+              extensions.pg_cron
+              extensions.postgis
+              extensions.timescaledb
+            ];
+          '';
+          description = ''
+            Additional PostgreSQL extensions to install.
+
+            The available extensions are:
+
+            ${lib.concatLines (builtins.map (x: "- " + x) (builtins.attrNames pkgs.postgresql.pkgs))}
+          '';
+        };
+
         dataDir = lib.mkOption {
           type = lib.types.str;
           default = "./data/${config.name}";
@@ -135,98 +155,114 @@ in
   };
   config = let cfg = config.services.postgres; in lib.mkIf cfg.enable {
     # TODO: Bring over https://github.com/cachix/devenv/blob/main/src/modules/services/postgres.nix
-    settings.processes = {
-      "${cfg.name}-init".command =
-        let
-          toStr = value:
-            if true == value then
-              "yes"
-            else if false == value then
-              "no"
-            else if lib.isString value then
-              "'${lib.replaceStrings [ "'" ] [ "''" ] value}'"
+    settings.processes =
+      let
+        postgresPkg =
+          if cfg.extensions != null then
+            if builtins.hasAttr "withPackages" cfg.package
+            then cfg.package.withPackages cfg.extensions
             else
-              toString value;
-          configFile = pkgs.writeText "postgresql.conf" (lib.concatStringsSep "\n"
-            (lib.mapAttrsToList (n: v: "${n} = ${toStr v}") cfg.settings));
+              builtins.throw ''
+                Cannot add extensions to the PostgreSQL package.
+                `services.postgres.package` is missing the `withPackages` attribute. Did you already add extensions to the package?
+              ''
+          else cfg.package;
+      in
+      {
+        # DB initialization
+        "${cfg.name}-init".command =
+          let
+            toStr = value:
+              if true == value then
+                "yes"
+              else if false == value then
+                "no"
+              else if lib.isString value then
+                "'${lib.replaceStrings [ "'" ] [ "''" ] value}'"
+              else
+                toString value;
+            configFile = pkgs.writeText "postgresql.conf" (lib.concatStringsSep "\n"
+              (lib.mapAttrsToList (n: v: "${n} = ${toStr v}") cfg.settings));
 
-          setupInitialDatabases =
-            if cfg.initialDatabases != [ ] then
-              (lib.concatMapStrings
-                (database: ''
-                  echo "Checking presence of database: ${database.name}"
-                  # Create initial databases
-                  dbAlreadyExists="$(
-                    echo "SELECT 1 as exists FROM pg_database WHERE datname = '${database.name}';" | \
-                    postgres --single -E postgres | \
-                    ${pkgs.gnugrep}/bin/grep -c 'exists = "1"' || true
-                  )"
-                  echo $dbAlreadyExists
-                  if [ 1 -ne "$dbAlreadyExists" ]; then
-                    echo "Creating database: ${database.name}"
-                    echo 'create database "${database.name}";' | postgres --single -E postgres
+            setupInitialDatabases =
+              if cfg.initialDatabases != [ ] then
+                (lib.concatMapStrings
+                  (database: ''
+                    echo "Checking presence of database: ${database.name}"
+                    # Create initial databases
+                    dbAlreadyExists="$(
+                      echo "SELECT 1 as exists FROM pg_database WHERE datname = '${database.name}';" | \
+                      postgres --single -E postgres | \
+                      ${pkgs.gnugrep}/bin/grep -c 'exists = "1"' || true
+                    )"
+                    echo $dbAlreadyExists
+                    if [ 1 -ne "$dbAlreadyExists" ]; then
+                      echo "Creating database: ${database.name}"
+                      echo 'create database "${database.name}";' | postgres --single -E postgres
 
 
-                    ${lib.optionalString (database.schema != null) ''
-                    echo "Applying database schema on ${database.name}"
-                    if [ -f "${database.schema}" ]
-                    then
-                      echo "Running file ${database.schema}"
-                      ${pkgs.gawk}/bin/awk 'NF' "${database.schema}" | postgres --single -j -E ${database.name}
-                    elif [ -d "${database.schema}" ]
-                    then
-                      # Read sql files in version order. Apply one file
-                      # at a time to handle files where the last statement
-                      # doesn't end in a ;.
-                      ls -1v "${database.schema}"/*.sql | while read f ; do
-                        echo "Applying sql file: $f"
-                        ${pkgs.gawk}/bin/awk 'NF' "$f" | postgres --single -j -E ${database.name}
-                      done
-                    else
-                      echo "ERROR: Could not determine how to apply schema with ${database.schema}"
-                      exit 1
+                      ${lib.optionalString (database.schema != null) ''
+                      echo "Applying database schema on ${database.name}"
+                      if [ -f "${database.schema}" ]
+                      then
+                        echo "Running file ${database.schema}"
+                        ${pkgs.gawk}/bin/awk 'NF' "${database.schema}" | postgres --single -j -E ${database.name}
+                      elif [ -d "${database.schema}" ]
+                      then
+                        # Read sql files in version order. Apply one file
+                        # at a time to handle files where the last statement
+                        # doesn't end in a ;.
+                        ls -1v "${database.schema}"/*.sql | while read f ; do
+                          echo "Applying sql file: $f"
+                          ${pkgs.gawk}/bin/awk 'NF' "$f" | postgres --single -j -E ${database.name}
+                        done
+                      else
+                        echo "ERROR: Could not determine how to apply schema with ${database.schema}"
+                        exit 1
+                      fi
+                      ''}
                     fi
-                    ''}
-                  fi
-                '')
-                cfg.initialDatabases)
-            else
-              lib.optionalString cfg.createDatabase ''
-                echo "CREATE DATABASE ''${USER:-$(id -nu)};" | postgres --single -E postgres '';
-          runInitialScript =
-            if cfg.initialScript != null then
-              ''
-                echo "${cfg.initialScript}" | postgres --single -E postgres
-              ''
-            else
-              "";
-        in
-        ''
-          export PATH="${cfg.package}"/bin:$PATH
-          export PGDATA="${cfg.dataDir}"
-          if [[ ! -d "$PGDATA" ]]; then
-            initdb ${lib.concatStringsSep " " cfg.initdbArgs}
-            ${setupInitialDatabases}
+                  '')
+                  cfg.initialDatabases)
+              else
+                lib.optionalString cfg.createDatabase ''
+                  echo "CREATE DATABASE ''${USER:-$(id -nu)};" | postgres --single -E postgres '';
+            runInitialScript =
+              if cfg.initialScript != null then
+                ''
+                  echo "${cfg.initialScript}" | postgres --single -E postgres
+                ''
+              else
+                "";
+          in
+          ''
+            export PATH="${postgresPkg}"/bin:$PATH
+            export PGDATA="${cfg.dataDir}"
+            if [[ ! -d "$PGDATA" ]]; then
+              initdb ${lib.concatStringsSep " " cfg.initdbArgs}
+              ${setupInitialDatabases}
 
-            ${runInitialScript}
-          fi
+              ${runInitialScript}
+            fi
 
-          # Setup config
-          cp ${configFile} "$PGDATA/postgresql.conf"
-        '';
-      ${cfg.name} = {
-        command = ''
-          set -x
-          export PATH="${cfg.package}"/bin:$PATH
-          export LOCKDIR="/tmp"
-          postgres -k $LOCKDIR -i -h 127.0.0.1 -D ${cfg.dataDir} 
-        '';
-        depends_on."${cfg.name}-init".condition = "process_completed_successfully";
-        # SIGINT (= 2) for faster shutdown: https://www.postgresql.org/docs/current/server-shutdown.html
-        shutdown.signal = 2;
-        # https://github.com/F1bonacc1/process-compose#-auto-restart-if-not-healthy
-        availability.restart = "on_failure";
+            # Setup config
+            cp ${configFile} "$PGDATA/postgresql.conf"
+          '';
+
+        # DB process
+        ${cfg.name} = {
+          command = ''
+            set -x
+            export PATH="${postgresPkg}"/bin:$PATH
+            export LOCKDIR="/tmp"
+            postgres -k $LOCKDIR -i -h 127.0.0.1 -D ${cfg.dataDir} 
+          '';
+          depends_on."${cfg.name}-init".condition = "process_completed_successfully";
+          # SIGINT (= 2) for faster shutdown: https://www.postgresql.org/docs/current/server-shutdown.html
+          shutdown.signal = 2;
+          # https://github.com/F1bonacc1/process-compose#-auto-restart-if-not-healthy
+          availability.restart = "on_failure";
+        };
       };
-    };
   };
 }
