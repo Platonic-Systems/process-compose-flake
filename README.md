@@ -63,6 +63,13 @@ devShells = {
 
 You can enter your devShell by running `nix develop` and run `watch-server` to run your processes.
 
+## Module API
+
+Our submodule mirrors the [process-compose YAML schema](https://github.com/F1bonacc1/process-compose/blob/main/process-compose.yaml), except in a few places where it makes sense to deviate a bit so as to be in line with the general Nix philosophy:
+
+- `process-compose.<name>.environment`: In the YAML config, a list of environment strings are specified. While this is supported, you can also specify the env vars as a Nix attrset
+- `process-compose.<name>.processes.<name>.command`: The command string (unless it is a Nix package) is necessarily wrapped in a `pkgs.writeShellApplication` (see [\#22](https://github.com/Platonic-Systems/process-compose-flake/issues/22)) which is done to avoid cases where your command tries to access an environment variable (set in the same process-compose config) but is actually unset due to the way process-compose itself invokes the process.
+
 ## Alternatives
 
 For a similar (and less feature-rich) module that uses a `Procfile`-based runner, see https://github.com/srid/proc-flake
