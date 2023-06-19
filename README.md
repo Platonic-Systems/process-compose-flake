@@ -70,3 +70,7 @@ For a similar (and less feature-rich) module that uses a `Procfile`-based runner
 ## Contributing
 
 Please run `./test.sh` on a NixOS machine to run the full suite of tests before pushing changes to the main branch. Our CI (Github Actions) cannot do this yet.
+
+## Related projects
+
+- [`services-flake`](https://github.com/juspay/services-flake): NixOS-like services built on top of process-compose-flake.
