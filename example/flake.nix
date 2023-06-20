@@ -17,58 +17,62 @@
       ];
       perSystem = { self', pkgs, lib, ... }: {
         # This adds a `self.packages.default`
-        process-compose."default" = let port = 8213; in {
-          settings = {
-            environment = {
-              DATAFILE = "data.sqlite";
-            };
-
-            processes = {
-              # Print a pony every 2 seconds, because why not.
-              ponysay.command = ''
-                while true; do
-                  ${lib.getExe pkgs.ponysay} "Enjoy our sqlite-web demo!"
-                  sleep 2
-                done
-              '';
-
-              # Create .sqlite database from chinook database.
-              sqlite-init = { name, ... }: {
-                command = pkgs.writeShellApplication {
-                  inherit name;
-                  text = ''
-                    echo "$(date): Importing Chinook database ($DATAFILE) ..."
-                    ${lib.getExe pkgs.sqlite} "$DATAFILE" < ${inputs.chinookDb}/ChinookDatabase/DataSources/Chinook_Sqlite.sql
-                    echo "$(date): Done."
-                  '';
-                };
+        process-compose."default" =
+          let
+            port = 8213;
+          in
+          {
+            settings = {
+              environment = {
+                DATAFILE = "data.sqlite";
               };
 
-              # Run sqlite-web on the local chinook database.
-              sqlite-web = { name, ... }: {
-                command = pkgs.writeShellApplication {
-                  inherit name;
-                  text = ''
-                    ${pkgs.sqlite-web}/bin/sqlite_web --port ${builtins.toString port} "$DATAFILE"
-                  '';
+              processes = {
+                # Print a pony every 2 seconds, because why not.
+                ponysay.command = ''
+                  while true; do
+                    ${lib.getExe pkgs.ponysay} "Enjoy our sqlite-web demo!"
+                    sleep 2
+                  done
+                '';
+
+                # Create .sqlite database from chinook database.
+                sqlite-init = { name, ... }: {
+                  command = pkgs.writeShellApplication {
+                    inherit name;
+                    text = ''
+                      echo "$(date): Importing Chinook database ($DATAFILE) ..."
+                      ${lib.getExe pkgs.sqlite} "$DATAFILE" < ${inputs.chinookDb}/ChinookDatabase/DataSources/Chinook_Sqlite.sql
+                      echo "$(date): Done."
+                    '';
+                  };
                 };
-                # The 'depends_on' will have this process wait until the above one is completed.
-                depends_on."sqlite-init".condition = "process_completed_successfully";
-                readiness_probe.http_get = {
-                  host = "localhost";
-                  inherit port;
+
+                # Run sqlite-web on the local chinook database.
+                sqlite-web = { name, ... }: {
+                  command = pkgs.writeShellApplication {
+                    inherit name;
+                    text = ''
+                      ${pkgs.sqlite-web}/bin/sqlite_web --port ${builtins.toString port} "$DATAFILE"
+                    '';
+                  };
+                  # The 'depends_on' will have this process wait until the above one is completed.
+                  depends_on."sqlite-init".condition = "process_completed_successfully";
+                  readiness_probe.http_get = {
+                    host = "localhost";
+                    inherit port;
+                  };
                 };
               };
             };
+
+            testScript = ''
+              process_compose.wait_until(lambda procs:
+                procs["sqlite-web"]["is_ready"] == "Ready"
+              )
+              machine.succeed("curl -v http://localhost:${builtins.toString port}/")
+            '';
           };
-
-          testScript = ''
-            process_compose.wait_until(lambda procs:
-              procs["sqlite-web"]["is_ready"] == "Ready"
-            )
-            machine.succeed("curl -v http://localhost:${builtins.toString port}/")
-          '';
-        };
       };
     };
 }
