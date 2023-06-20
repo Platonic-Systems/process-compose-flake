@@ -25,6 +25,7 @@
           {
             settings = {
               environment = {
+                SQLITE_WEB_PASSWORD = "demo";
               };
 
               processes = {
@@ -46,7 +47,9 @@
                 # Run sqlite-web on the local chinook database.
                 sqlite-web = {
                   command = ''
-                    ${pkgs.sqlite-web}/bin/sqlite_web --port ${builtins.toString port} "${dataFile}"
+                    ${pkgs.sqlite-web}/bin/sqlite_web \
+                      --password \
+                      --port ${builtins.toString port} "${dataFile}"
                   '';
                   # The 'depends_on' will have this process wait until the above one is completed.
                   depends_on."sqlite-init".condition = "process_completed_successfully";
