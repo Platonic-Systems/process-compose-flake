@@ -20,11 +20,11 @@
         process-compose."default" =
           let
             port = 8213;
+            dataFile = "data.sqlite";
           in
           {
             settings = {
               environment = {
-                DATAFILE = "data.sqlite";
               };
 
               processes = {
@@ -37,25 +37,17 @@
                 '';
 
                 # Create .sqlite database from chinook database.
-                sqlite-init = { name, ... }: {
-                  command = pkgs.writeShellApplication {
-                    inherit name;
-                    text = ''
-                      echo "$(date): Importing Chinook database ($DATAFILE) ..."
-                      ${lib.getExe pkgs.sqlite} "$DATAFILE" < ${inputs.chinookDb}/ChinookDatabase/DataSources/Chinook_Sqlite.sql
-                      echo "$(date): Done."
-                    '';
-                  };
-                };
+                sqlite-init.command = ''
+                  echo "$(date): Importing Chinook database (${dataFile}) ..."
+                  ${lib.getExe pkgs.sqlite} "${dataFile}" < ${inputs.chinookDb}/ChinookDatabase/DataSources/Chinook_Sqlite.sql
+                  echo "$(date): Done."
+                '';
 
                 # Run sqlite-web on the local chinook database.
-                sqlite-web = { name, ... }: {
-                  command = pkgs.writeShellApplication {
-                    inherit name;
-                    text = ''
-                      ${pkgs.sqlite-web}/bin/sqlite_web --port ${builtins.toString port} "$DATAFILE"
-                    '';
-                  };
+                sqlite-web = {
+                  command = ''
+                    ${pkgs.sqlite-web}/bin/sqlite_web --port ${builtins.toString port} "${dataFile}"
+                  '';
                   # The 'depends_on' will have this process wait until the above one is completed.
                   depends_on."sqlite-init".condition = "process_completed_successfully";
                   readiness_probe.http_get = {
