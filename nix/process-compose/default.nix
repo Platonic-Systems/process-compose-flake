@@ -1,4 +1,4 @@
-{ name, config, pkgs, lib, ... }:
+{ name, config, pkgs, lib, flakeModuleConfig, ... }:
 
 let
   inherit (lib) types mkOption;
@@ -45,14 +45,26 @@ in
     pkgs.writeShellApplication {
       inherit name;
       runtimeInputs = [ config.package ];
-      text = ''
-        ${if config.debug then "cat ${config.outputs.settingsYaml}" else ""}
-        ${if config.fromFlakeRoot then "[[ -n $FLAKE_ROOT ]] && cd \"$FLAKE_ROOT\"" else "" }
-        process-compose up \
-          -f ${config.outputs.settingsYaml} \
-          ${config.outputs.upCommandArgs} \
-          "$@"
-      '';
+      text =
+        let
+          targetCommand = ''
+            process-compose up \
+              -f ${config.outputs.settingsYaml} \
+              ${config.outputs.upCommandArgs} \
+              "$@"
+          '';
+          invokeCommand =
+            if !lib.inPureEvalMode && config.fromFlakeRoot then
+              ''
+                ROOT=$(${lib.getExe flakeModuleConfig.flake-root.package})
+                [[ -n $ROOT ]] && (cd "$ROOT" && ${targetCommand})
+              ''
+            else targetCommand;
+        in
+        ''
+          ${if config.debug then "cat ${config.outputs.settingsYaml}" else ""}
+          ${invokeCommand}
+        '';
     };
 }
 

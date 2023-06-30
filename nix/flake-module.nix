@@ -12,7 +12,7 @@ in
     let
       submoduleWithPkgs = mod:
         types.submoduleWith {
-          specialArgs = { inherit pkgs lib submoduleWithPkgs; };
+          specialArgs = { inherit pkgs lib submoduleWithPkgs; flakeModuleConfig = config; };
           modules = [ mod ];
         };
     in
