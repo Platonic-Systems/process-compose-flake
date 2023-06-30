@@ -32,6 +32,13 @@ in
         Whether to dump the process-compose YAML file at start.
       '';
     };
+    fromFlakeRoot = mkOption {
+      type = types.bool;
+      default = true;
+      description = ''
+        Whether to start process-compose from $FLAKE_ROOT (see https://github.com/srid/flake-root).
+      '';
+    };
   };
 
   config.outputs.package =
@@ -40,6 +47,7 @@ in
       runtimeInputs = [ config.package ];
       text = ''
         ${if config.debug then "cat ${config.outputs.settingsYaml}" else ""}
+        ${if config.fromFlakeRoot then "[[ -n $FLAKE_ROOT ]] && cd \"$FLAKE_ROOT\"" else "" }
         process-compose up \
           -f ${config.outputs.settingsYaml} \
           ${config.outputs.upCommandArgs} \
