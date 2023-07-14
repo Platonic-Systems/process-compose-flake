@@ -73,7 +73,7 @@ Our submodule mirrors the [process-compose YAML schema](https://github.com/F1bon
 
 ## Contributing
 
-Please run `./test.sh` on a NixOS machine to run the full suite of tests before pushing changes to the main branch. Our CI (Github Actions) cannot do this yet.
+Please run `nix run github:srid/nixci` on a NixOS machine to run the full suite of tests before pushing changes to the main branch. Our CI (Github Actions) cannot do this yet.
 
 ## Related projects
 
