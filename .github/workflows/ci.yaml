@@ -14,4 +14,4 @@ jobs:
       - name: Build example
         id: example
         run: |
-          nix build -L --no-link --print-out-paths --override-input process-compose-flake . ./example
+          nix run github:srid/nixci
