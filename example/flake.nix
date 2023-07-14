@@ -61,6 +61,7 @@
               };
             };
 
+            # Set this attribute and get NixOS VM tests, as a flake check, for free.
             testScript = ''
               process_compose.wait_until(lambda procs:
                 procs["sqlite-web"]["is_ready"] == "Ready"
