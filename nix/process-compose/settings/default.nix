@@ -1,4 +1,4 @@
-{ name, config, pkgs, lib, submoduleWithPkgs, ... }:
+{ name, config, pkgs, lib, ... }:
 let
   inherit (lib) types mkOption literalExpression;
 in
@@ -8,7 +8,7 @@ in
       type = types.submodule {
         options = {
           processes = mkOption {
-            type = types.attrsOf (submoduleWithPkgs ./process.nix);
+            type = types.attrsOf (types.submodule ./process.nix);
             default = { };
             description = ''
               A map of process names to their configuration.
