@@ -5,66 +5,68 @@ in
 {
   options = {
     settings = mkOption {
-      type = types.submodule {
-        options = {
-          processes = mkOption {
-            type = types.attrsOf (types.submodule ./process.nix);
-            default = { };
-            description = ''
-              A map of process names to their configuration.
-            '';
-          };
-
-          environment = import ./environment.nix { inherit lib; };
-
-          log_length = mkOption {
-            type = types.nullOr types.ints.unsigned;
-            default = null;
-            example = 3000;
-          };
-          log_level = mkOption {
-            type = types.nullOr (types.enum [
-              "trace"
-              "debug"
-              "info"
-              "warn"
-              "error"
-              "fatal"
-              "panic"
-            ]);
-            default = null;
-            example = "info";
-          };
-          log_location = mkOption {
-            type = types.nullOr types.str;
-            default = null;
-            example = "./pc.log";
-          };
-
-          shell = {
-            shell_argument = mkOption {
-              type = types.str;
-              default = "-c";
-              example = "-c";
-            };
-            shell_command = mkOption {
-              type = types.str;
+      type = types.submoduleWith {
+        modules = [{
+          options = {
+            processes = mkOption {
+              type = types.attrsOf (types.submodule ./process.nix);
+              default = { };
               description = ''
-                The shell to use to run the process `command`s.
-
-                For reproducibility across systems, by default this uses
-                `pkgs.bash`.
+                A map of process names to their configuration.
               '';
-              default = lib.getExe pkgs.bash;
+            };
+
+            environment = import ./environment.nix { inherit lib; };
+
+            log_length = mkOption {
+              type = types.nullOr types.ints.unsigned;
+              default = null;
+              example = 3000;
+            };
+            log_level = mkOption {
+              type = types.nullOr (types.enum [
+                "trace"
+                "debug"
+                "info"
+                "warn"
+                "error"
+                "fatal"
+                "panic"
+              ]);
+              default = null;
+              example = "info";
+            };
+            log_location = mkOption {
+              type = types.nullOr types.str;
+              default = null;
+              example = "./pc.log";
+            };
+
+            shell = {
+              shell_argument = mkOption {
+                type = types.str;
+                default = "-c";
+                example = "-c";
+              };
+              shell_command = mkOption {
+                type = types.str;
+                description = ''
+                  The shell to use to run the process `command`s.
+
+                  For reproducibility across systems, by default this uses
+                  `pkgs.bash`.
+                '';
+                default = lib.getExe pkgs.bash;
+              };
+            };
+
+            version = mkOption {
+              type = types.nullOr types.str;
+              default = null;
+              example = "0.5";
             };
           };
-
-          version = mkOption {
-            type = types.nullOr types.str;
-            default = null;
-            example = "0.5";
-          };
-        };
+        }];
       };
       example =
         # packages.${system}.watch-server becomes available
