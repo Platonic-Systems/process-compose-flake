@@ -1,5 +1,6 @@
 ---
 slug: /process-compose-flake
+sidebar_position: 3
 ---
 
 # process-compose-flake
