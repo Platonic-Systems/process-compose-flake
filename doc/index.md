@@ -1,9 +1,10 @@
 ---
 slug: /process-compose-flake
 sidebar_position: 3
+sidebar_label: Processes
 ---
 
-# process-compose-flake
+# Process management using `process-compose-flake`
 
 [process-compose-flake](https://github.com/Platonic-Systems/process-compose-flake) is a [flake-parts](https://flake.parts/) module for [process-compose](https://github.com/F1bonacc1/process-compose).
 
