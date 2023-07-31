@@ -48,6 +48,11 @@ in
         default = null;
         example = "on_failure";
       };
+      exit_on_end = mkOption {
+        type = types.nullOr types.bool;
+        default = null;
+        example = true;
+      };
       backoff_seconds = mkOption {
         type = types.nullOr types.ints.unsigned;
         default = null;
