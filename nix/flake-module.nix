@@ -44,10 +44,10 @@ in
                 touch $out
               '';
           in
-          (lib.filterAttrs (_: v: v != null) checks') //
-          lib.mapAttrs
+          (lib.mapAttrs
             (name: cfg: runCommandInSimulatedShell name (cfg.outputs.package true))
-            config.process-compose;
+            config.process-compose) //
+          lib.filterAttrs (_: v: v != null) checks';
       };
     });
 }
