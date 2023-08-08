@@ -92,9 +92,14 @@ in
       type = types.attrsOf types.raw;
       internal = true;
     };
+    outputs.settingsWithTestYaml = mkOption {
+      type = types.attrsOf types.raw;
+      description = "Yaml configuration where the process named `test` is enabled";
+      internal = true;
+    };
   };
 
-  config.outputs.settingsYaml =
+  config.outputs =
     let
       removeNullAndEmptyAttrs = attrs:
         let
@@ -108,7 +113,13 @@ in
         pkgs.runCommand "${name}.yaml" { buildInputs = [ pkgs.yq-go ]; } ''
           yq -oy -P '.' ${pkgs.writeTextFile { name = "process-compose-${name}.json"; text = (builtins.toJSON attrs); }} > $out
         '';
+
     in
-    toYAMLFile (removeNullAndEmptyAttrs config.settings);
+    {
+      settingsYaml = toYAMLFile (removeNullAndEmptyAttrs config.settings);
+      settingsWithTestYaml = toYAMLFile (removeNullAndEmptyAttrs
+        { processes = lib.mapAttrs (name: value: if name == "test" then value // { disabled = false; } else value) config.settings.processes; });
+    };
+
 }
 

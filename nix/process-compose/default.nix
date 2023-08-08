@@ -20,9 +20,9 @@ in
       '';
     };
     outputs.package = mkOption {
-      type = types.package;
+      type = types.functionTo types.package;
       description = ''
-        The final package that will run 'process-compose up' for this configuration.
+        Whether the final package will run 'process-compose up' for the configuration with or without test process.
       '';
     };
     debug = mkOption {
@@ -34,13 +34,13 @@ in
     };
   };
 
-  config.outputs.package =
+  config.outputs.package = enableTestProcess:
     pkgs.writeShellApplication {
       inherit name;
       runtimeInputs = [ config.package ];
       text = ''
         ${if config.debug then "cat ${config.outputs.settingsYaml}" else ""}
-        export PC_CONFIG_FILES=${config.outputs.settingsYaml}
+        export PC_CONFIG_FILES=${if enableTestProcess then config.outputs.settingsWithTestYaml else config.outputs.settingsYaml}
         ${
           # Once the following issue is fixed we should be able to simply do:
           # export PC_DISABLE_TUI=${builtins.toJSON (!config.tui)}

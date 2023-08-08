@@ -25,15 +25,29 @@ in
 
       config = {
         packages = lib.mapAttrs
-          (name: cfg: cfg.outputs.package)
+          (name: cfg: cfg.outputs.package false)
           config.process-compose;
         checks =
           let
             checks' = lib.mapAttrs
               (name: cfg: cfg.outputs.check)
               config.process-compose;
+            runCommandInSimulatedShell = name: package:
+              pkgs.runCommand "${name}-test" { nativeBuildInputs = [ package ]; } ''
+                # Set pipefail option for safer bash
+                set -euo pipefail
+                export HOME=$TMP
+                cd $HOME
+                # Run with tui disabled because /dev/tty is disabled in the simulated shell
+                ${name} -t=false
+                # `runCommand` will fail if $out isn't created
+                touch $out
+              '';
           in
-          lib.filterAttrs (_: v: v != null) checks';
+          (lib.filterAttrs (_: v: v != null) checks') //
+          lib.mapAttrs
+            (name: cfg: runCommandInSimulatedShell name (cfg.outputs.package true))
+            config.process-compose;
       };
     });
 }
