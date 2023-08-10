@@ -84,7 +84,7 @@ in
                   name = "process-compose-${name}";
                   text = ''
                     set -x
-                    ${lib.getExe (config.outputs.package false)} -t=false
+                    ${lib.getExe (config.outputs.getPackageWithTest false)} -t=false
                     echo "unexpected: process-compose exited successfully (all processes are completed?)"
                     exit 2
                   '';

@@ -92,8 +92,8 @@ in
       type = types.attrsOf types.raw;
       internal = true;
     };
-    outputs.settingsWithTestYaml = mkOption {
-      type = types.attrsOf types.raw;
+    outputs.settingsYamlWithTest = mkOption {
+      type = types.nullOr (types.attrsOf types.raw);
       description = "Yaml configuration where the process named `test` is enabled";
       internal = true;
     };
@@ -108,6 +108,14 @@ in
           # evaluate it again and to get rid of it.
         in
         lib.pipe attrs [ f f ];
+      disableTestProcess = disabled: attrs:
+        {
+          processes =
+            lib.mapAttrs
+              (k: v: if k == "test" then v // { inherit disabled; availability.exit_on_end = true; } else v)
+              attrs.processes;
+        };
+
       toYAMLFile =
         attrs:
         pkgs.runCommand "${name}.yaml" { buildInputs = [ pkgs.yq-go ]; } ''
@@ -116,9 +124,11 @@ in
 
     in
     {
-      settingsYaml = toYAMLFile (removeNullAndEmptyAttrs config.settings);
-      settingsWithTestYaml = toYAMLFile (removeNullAndEmptyAttrs
-        { processes = lib.mapAttrs (name: value: if name == "test" then value // { disabled = false; } else value) config.settings.processes; });
+      settingsYaml = toYAMLFile (lib.pipe config.settings [ removeNullAndEmptyAttrs (disableTestProcess true) ]);
+      settingsYamlWithTest =
+        if builtins.hasAttr "test" config.settings.processes then
+          toYAMLFile (lib.pipe config.settings [ removeNullAndEmptyAttrs (disableTestProcess false) ])
+        else null;
     };
 
 }

@@ -25,7 +25,7 @@ in
 
       config = {
         packages = lib.mapAttrs
-          (name: cfg: cfg.outputs.package false)
+          (name: cfg: cfg.outputs.getPackageWithTest false)
           config.process-compose;
         checks =
           let
@@ -43,10 +43,13 @@ in
                 # `runCommand` will fail if $out isn't created
                 touch $out
               '';
+            testProcessChecks = lib.mapAttrs
+              (name: cfg: cfg.outputs.getPackageWithTest true)
+              config.process-compose;
           in
           (lib.mapAttrs
-            (name: cfg: runCommandInSimulatedShell name (cfg.outputs.package true))
-            config.process-compose) //
+            (name: package: runCommandInSimulatedShell name package)
+            (lib.filterAttrs (_: v: v != null) testProcessChecks)) //
           lib.filterAttrs (_: v: v != null) checks';
       };
     });
