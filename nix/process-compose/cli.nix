@@ -7,7 +7,7 @@ in
   options = {
     port = mkOption {
       type = types.int;
-      default = 8080;
+      default = 0;
       description = ''
         Port to serve process-compose's Swagger API on.
       '';
