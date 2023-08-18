@@ -19,10 +19,16 @@ in
         The process-compose package to bundle up in the command package and flake app.
       '';
     };
-    outputs.getPackageWithTest = mkOption {
-      type = types.functionTo (types.nullOr types.package);
+    outputs.package = mkOption {
+      type = types.package;
       description = ''
-        Whether the final package will run 'process-compose up' for the configuration with or without test process.
+        The final package that will run 'process-compose up' for this configuration.
+      '';
+    };
+    outputs.testPackage = mkOption {
+      type = types.package;
+      description = ''
+        The final package that will run 'process-compose up' for this configuration and enable the `test` process.
       '';
     };
     debug = mkOption {
@@ -34,23 +40,42 @@ in
     };
   };
 
-  config.outputs.getPackageWithTest = useTestYaml:
-    if (useTestYaml && config.outputs.settingsYamlWithTest == null) then null
-    else
-      pkgs.writeShellApplication {
-        inherit name;
-        runtimeInputs = [ config.package ];
-        text = ''
-          ${if config.debug then "cat ${if useTestYaml then config.outputs.settingsYamlWithTest else config.outputs.settingsYaml}" else ""}
-          export PC_CONFIG_FILES=${if useTestYaml then config.outputs.settingsYamlWithTest else config.outputs.settingsYaml}
-          ${
-            # Once the following issue is fixed we should be able to simply do:
-            # export PC_DISABLE_TUI=${builtins.toJSON (!config.tui)}
-            # https://github.com/F1bonacc1/process-compose/issues/75
-            if config.tui then "" else "export PC_DISABLE_TUI=true"
-          }
-          exec process-compose -p ${toString config.port} "$@"
-        '';
-      };
+  config.outputs.package =
+    pkgs.writeShellApplication {
+      inherit name;
+      runtimeInputs = [ config.package ];
+      text = ''
+        ${if config.debug then "cat ${config.outputs.settingsYaml}" else ""}
+        export PC_CONFIG_FILES=${config.outputs.settingsYaml}
+        ${
+          # Once the following issue is fixed we should be able to simply do:
+          # export PC_DISABLE_TUI=${builtins.toJSON (!config.tui)}
+          # https://github.com/F1bonacc1/process-compose/issues/75
+          if config.tui then "" else "export PC_DISABLE_TUI=true"
+        }
+        exec process-compose -p ${toString config.port} "$@"
+      '';
+    };
+  config.outputs.testPackage =
+    let
+      mergedYaml = pkgs.runCommand "${name}-merged.yaml" { buildInputs = [ pkgs.yq-go ]; } ''
+        yq '. *= load("${config.outputs.settingsYamlOverlay}")' ${config.outputs.settingsYaml} > $out
+      '';
+    in
+    pkgs.writeShellApplication {
+      inherit name;
+      runtimeInputs = [ config.package ];
+      text = ''
+        ${if config.debug then "cat ${mergedYaml}" else ""}
+        export PC_CONFIG_FILES=${mergedYaml}
+        ${
+          # Once the following issue is fixed we should be able to simply do:
+          # export PC_DISABLE_TUI=${builtins.toJSON (!config.tui)}
+          # https://github.com/F1bonacc1/process-compose/issues/75
+          if config.tui then "" else "export PC_DISABLE_TUI=true"
+        }
+        exec process-compose -p ${toString config.port} "$@"
+      '';
+    };
 }
 

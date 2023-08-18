@@ -92,9 +92,9 @@ in
       type = types.attrsOf types.raw;
       internal = true;
     };
-    outputs.settingsYamlWithTest = mkOption {
-      type = types.nullOr (types.attrsOf types.raw);
-      description = "Yaml configuration where the process named `test` is enabled";
+
+    outputs.settingsYamlOverlay = mkOption {
+      type = types.attrsOf types.raw;
       internal = true;
     };
   };
@@ -124,12 +124,8 @@ in
 
     in
     {
-      settingsYaml = toYAMLFile (lib.pipe config.settings [ removeNullAndEmptyAttrs (disableTestProcess true) ]);
-      settingsYamlWithTest =
-        if builtins.hasAttr "test" config.settings.processes then
-          toYAMLFile (lib.pipe config.settings [ removeNullAndEmptyAttrs (disableTestProcess false) ])
-        else null;
+      settingsYaml = toYAMLFile (removeNullAndEmptyAttrs config.settings);
+      settingsYamlOverlay = toYAMLFile { processes = { test = { disabled = false; availability.exit_on_end = true; }; }; };
     };
-
 }
 
