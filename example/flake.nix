@@ -58,16 +58,21 @@
                     inherit port;
                   };
                 };
+
+                # Set this attribute and get Native tests, as a flake check, for free.
+                test =
+                  {
+                    command = pkgs.writeShellApplication {
+                      runtimeInputs = [ pkgs.curl ];
+                      text = ''
+                        curl -v http://localhost:${builtins.toString port}/
+                      '';
+                      name = "sqlite-web-test";
+                    };
+                    depends_on."sqlite-web".condition = "process_healthy";
+                  };
               };
             };
-
-            # Set this attribute and get NixOS VM tests, as a flake check, for free.
-            testScript = ''
-              process_compose.wait_until(lambda procs:
-                procs["sqlite-web"]["is_ready"] == "Ready"
-              )
-              machine.succeed("curl -v http://localhost:${builtins.toString port}/")
-            '';
           };
       };
     };

@@ -13,7 +13,6 @@ in
             set -euo pipefail
             export HOME=$TMP
             cd $HOME
-            echo "Running tests for ${name}"
             # Run with tui disabled because /dev/tty is disabled in the simulated shell
             ${name} -t=false
             # `runCommand` will fail if $out isn't created
