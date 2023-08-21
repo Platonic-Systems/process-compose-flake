@@ -58,7 +58,7 @@ in
     };
   config.outputs.testPackage =
     pkgs.writeShellApplication {
-      inherit name;
+      name = "${name}-test";
       runtimeInputs = [ config.package ];
       text = ''
         ${if config.debug then "cat ${config.outputs.settingsYaml} ${config.outputs.settingsYamlOverlay}" else ""}
