@@ -8,13 +8,13 @@ in
       type = types.nullOr types.package;
       default =
         if (builtins.hasAttr "test" config.settings.processes) then
-          pkgs.runCommand "${name}-test" { nativeBuildInputs = [ config.outputs.testPackage ]; } ''
+          pkgs.runCommand "${name}-test" { } ''
             # Set pipefail option for safer bash
             set -euo pipefail
             export HOME=$TMP
             cd $HOME
             # Run with tui disabled because /dev/tty is disabled in the simulated shell
-            ${name} -t=false
+            ${lib.getExe config.outputs.testPackage} -t=false
             # `runCommand` will fail if $out isn't created
             touch $out
           ''
