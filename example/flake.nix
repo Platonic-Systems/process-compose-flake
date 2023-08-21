@@ -59,18 +59,19 @@
                   };
                 };
 
-                # Set this attribute and get Native tests, as a flake check, for free.
-                test =
-                  {
-                    command = pkgs.writeShellApplication {
-                      runtimeInputs = [ pkgs.curl ];
-                      text = ''
-                        curl -v http://localhost:${builtins.toString port}/
-                      '';
-                      name = "sqlite-web-test";
-                    };
-                    depends_on."sqlite-web".condition = "process_healthy";
+                # If a process is named 'test', it will be ignored. But a new
+                # flake check will be created that runs it so as to test the
+                # other processes.
+                test = {
+                  command = pkgs.writeShellApplication {
+                    name = "sqlite-web-test";
+                    runtimeInputs = [ pkgs.curl ];
+                    text = ''
+                      curl -v http://localhost:${builtins.toString port}/
+                    '';
                   };
+                  depends_on."sqlite-web".condition = "process_healthy";
+                };
               };
             };
           };
