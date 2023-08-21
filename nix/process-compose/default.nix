@@ -61,8 +61,7 @@ in
       inherit name;
       runtimeInputs = [ config.package ];
       text = ''
-        ${if config.debug then "cat cat ${config.outputs.settingsYaml} ${config.outputs.settingsYamlOverlay}" else ""}
-        # export PC_CONFIG_FILES="${config.outputs.settingsYaml} ${config.outputs.settingsYamlOverlay}"
+        ${if config.debug then "cat ${config.outputs.settingsYaml} ${config.outputs.settingsYamlOverlay}" else ""}
         ${
           # Once the following issue is fixed we should be able to simply do:
           # export PC_DISABLE_TUI=${builtins.toJSON (!config.tui)}
