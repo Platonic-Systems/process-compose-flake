@@ -7,7 +7,7 @@ in
     outputs.check = mkOption {
       type = types.nullOr types.package;
       default =
-        if (builtins.hasAttr "test" config.settings.processes) then
+        if (config.outputs.testPackage != null) then
           pkgs.runCommand "${name}-test" { } ''
             # Set pipefail option for safer bash
             set -euo pipefail
