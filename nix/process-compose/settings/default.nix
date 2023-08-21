@@ -108,14 +108,6 @@ in
           # evaluate it again and to get rid of it.
         in
         lib.pipe attrs [ f f ];
-      disableTestProcess = disabled: attrs:
-        {
-          processes =
-            lib.mapAttrs
-              (k: v: if k == "test" then v // { inherit disabled; availability.exit_on_end = true; } else v)
-              attrs.processes;
-        };
-
       toYAMLFile =
         attrs:
         pkgs.runCommand "${name}.yaml" { buildInputs = [ pkgs.yq-go ]; } ''
