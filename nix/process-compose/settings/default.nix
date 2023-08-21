@@ -93,7 +93,7 @@ in
       internal = true;
     };
 
-    outputs.settingsYamlOverlay = mkOption {
+    outputs.settingsYamlTestOverlay = mkOption {
       type = types.attrsOf types.raw;
       internal = true;
     };
@@ -117,7 +117,7 @@ in
     in
     {
       settingsYaml = toYAMLFile (removeNullAndEmptyAttrs config.settings);
-      settingsYamlOverlay = toYAMLFile { processes = { test = { disabled = false; availability.exit_on_end = true; }; }; };
+      settingsYamlTestOverlay = toYAMLFile { processes = { test = { disabled = false; availability.exit_on_end = true; }; }; };
     };
 }
 

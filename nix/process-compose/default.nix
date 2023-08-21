@@ -69,7 +69,7 @@ in
             {
               name = "${name}-test";
               inherit (config) tui port;
-              configFiles = [ config.outputs.settingsYaml config.outputs.settingsYamlOverlay ];
+              configFiles = [ config.outputs.settingsYaml config.outputs.settingsYamlTestOverlay ];
             }
         else null;
     };
