@@ -57,24 +57,19 @@ in
       '';
     };
   config.outputs.testPackage =
-    let
-      mergedYaml = pkgs.runCommand "${name}-merged.yaml" { buildInputs = [ pkgs.yq-go ]; } ''
-        yq '. *= load("${config.outputs.settingsYamlOverlay}")' ${config.outputs.settingsYaml} > $out
-      '';
-    in
     pkgs.writeShellApplication {
       inherit name;
       runtimeInputs = [ config.package ];
       text = ''
-        ${if config.debug then "cat ${mergedYaml}" else ""}
-        export PC_CONFIG_FILES=${mergedYaml}
+        ${if config.debug then "cat cat ${config.outputs.settingsYaml} ${config.outputs.settingsYamlOverlay}" else ""}
+        # export PC_CONFIG_FILES="${config.outputs.settingsYaml} ${config.outputs.settingsYamlOverlay}"
         ${
           # Once the following issue is fixed we should be able to simply do:
           # export PC_DISABLE_TUI=${builtins.toJSON (!config.tui)}
           # https://github.com/F1bonacc1/process-compose/issues/75
           if config.tui then "" else "export PC_DISABLE_TUI=true"
         }
-        exec process-compose -p ${toString config.port} "$@"
+        exec process-compose -p ${toString config.port} -f ${config.outputs.settingsYaml} -f ${config.outputs.settingsYamlOverlay} "$@"
       '';
     };
 }
