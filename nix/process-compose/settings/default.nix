@@ -92,9 +92,14 @@ in
       type = types.attrsOf types.raw;
       internal = true;
     };
+
+    outputs.settingsYamlTestOverlay = mkOption {
+      type = types.attrsOf types.raw;
+      internal = true;
+    };
   };
 
-  config.outputs.settingsYaml =
+  config.outputs =
     let
       removeNullAndEmptyAttrs = attrs:
         let
@@ -108,7 +113,11 @@ in
         pkgs.runCommand "${name}.yaml" { buildInputs = [ pkgs.yq-go ]; } ''
           yq -oy -P '.' ${pkgs.writeTextFile { name = "process-compose-${name}.json"; text = (builtins.toJSON attrs); }} > $out
         '';
+
     in
-    toYAMLFile (removeNullAndEmptyAttrs config.settings);
+    {
+      settingsYaml = toYAMLFile (removeNullAndEmptyAttrs config.settings);
+      settingsYamlTestOverlay = toYAMLFile { processes = { test = { disabled = false; availability.exit_on_end = true; }; }; };
+    };
 }
 

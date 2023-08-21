@@ -25,30 +25,53 @@ in
         The final package that will run 'process-compose up' for this configuration.
       '';
     };
-    debug = mkOption {
-      type = types.bool;
-      default = false;
+    outputs.testPackage = mkOption {
+      type = types.nullOr types.package;
       description = ''
-        Whether to dump the process-compose YAML file at start.
+        Like `outputs.package` but includes the "test" process
+
+        Set to null if there is no "test" process.
       '';
     };
   };
 
-  config.outputs.package =
-    pkgs.writeShellApplication {
-      inherit name;
-      runtimeInputs = [ config.package ];
-      text = ''
-        ${if config.debug then "cat ${config.outputs.settingsYaml}" else ""}
-        export PC_CONFIG_FILES=${config.outputs.settingsYaml}
-        ${
-          # Once the following issue is fixed we should be able to simply do:
-          # export PC_DISABLE_TUI=${builtins.toJSON (!config.tui)}
-          # https://github.com/F1bonacc1/process-compose/issues/75
-          if config.tui then "" else "export PC_DISABLE_TUI=true"
-        }
-        exec process-compose -p ${toString config.port} "$@"
-      '';
+  config.outputs =
+    let
+      mkProcessComposeWrapper = { name, tui, port, configFiles }:
+        pkgs.writeShellApplication {
+          inherit name;
+          runtimeInputs = [ config.package ];
+          text = ''
+            export PC_CONFIG_FILES=${lib.concatStringsSep "," configFiles}
+            ${
+              # Once the following issue is fixed we should be able to simply do:
+              # export PC_DISABLE_TUI=${builtins.toJSON (!config.tui)}
+              # https://github.com/F1bonacc1/process-compose/issues/75
+              if tui then "" else "export PC_DISABLE_TUI=true"
+            }
+            exec process-compose -p ${toString port} "$@"
+          '';
+        };
+    in
+    {
+      package =
+        mkProcessComposeWrapper
+          {
+            inherit name;
+            inherit (config) tui port;
+            configFiles = [ config.outputs.settingsYaml ];
+          };
+      testPackage =
+        if
+          (builtins.hasAttr "test" config.settings.processes)
+        then
+          mkProcessComposeWrapper
+            {
+              name = "${name}-test";
+              inherit (config) tui port;
+              configFiles = [ config.outputs.settingsYaml config.outputs.settingsYamlTestOverlay ];
+            }
+        else null;
     };
 }
 

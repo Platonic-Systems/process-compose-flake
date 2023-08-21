@@ -2,7 +2,7 @@ name: "CI"
 on:
   push:
     branches:
-      - '*'
+      - main
   pull_request:
 jobs:
   checks:
@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
-      - name: Build example
-        id: example
-        run: |
-          nix build -L --no-link --print-out-paths --override-input process-compose-flake . ./example
+      - uses: yaxitech/nix-install-pkgs-action@v3
+        with:
+          packages: "nixpkgs#nixci"
+      - run: nixci
