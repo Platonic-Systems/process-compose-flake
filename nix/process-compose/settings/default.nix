@@ -87,18 +87,16 @@ in
         Which runs process-compose with the declared config.
       '';
     };
-
     outputs.settingsYaml = mkOption {
       type = types.attrsOf types.raw;
       internal = true;
     };
 
-    outputs.settingsYamlTestOverlay = mkOption {
+    outputs.settingsTestYaml = mkOption {
       type = types.attrsOf types.raw;
       internal = true;
     };
   };
-
   config.outputs =
     let
       removeNullAndEmptyAttrs = attrs:
@@ -117,7 +115,15 @@ in
     in
     {
       settingsYaml = toYAMLFile (removeNullAndEmptyAttrs config.settings);
-      settingsYamlTestOverlay = toYAMLFile { processes = { test = { disabled = false; availability.exit_on_end = true; }; }; };
+      settingsTestYaml = toYAMLFile (removeNullAndEmptyAttrs
+        (config.settings //
+          {
+            processes =
+              {
+                test = { disabled = false; availability.exit_on_end = true; };
+              };
+          }
+        ));
     };
 }
 

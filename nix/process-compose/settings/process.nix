@@ -115,7 +115,7 @@ in
     };
     disabled = mkOption {
       type = types.nullOr types.bool;
-      default = null;
+      default = if name == "test" then true else null;
       example = true;
     };
 

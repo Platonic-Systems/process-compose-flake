@@ -37,12 +37,12 @@ in
 
   config.outputs =
     let
-      mkProcessComposeWrapper = { name, tui, port, configFiles }:
+      mkProcessComposeWrapper = { name, tui, port, configFile }:
         pkgs.writeShellApplication {
           inherit name;
           runtimeInputs = [ config.package ];
           text = ''
-            export PC_CONFIG_FILES=${lib.concatStringsSep "," configFiles}
+            export PC_CONFIG_FILES=${configFile}
             ${
               # Once the following issue is fixed we should be able to simply do:
               # export PC_DISABLE_TUI=${builtins.toJSON (!config.tui)}
@@ -59,7 +59,7 @@ in
           {
             inherit name;
             inherit (config) tui port;
-            configFiles = [ config.outputs.settingsYaml ];
+            configFile = config.outputs.settingsYaml;
           };
       testPackage =
         if
@@ -69,7 +69,7 @@ in
             {
               name = "${name}-test";
               inherit (config) tui port;
-              configFiles = [ config.outputs.settingsYaml config.outputs.settingsYamlTestOverlay ];
+              configFile = config.outputs.settingsTestYaml;
             }
         else null;
     };
