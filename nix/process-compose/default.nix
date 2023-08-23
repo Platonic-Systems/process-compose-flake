@@ -83,12 +83,13 @@ in
             {
               name = "${name}-test";
               inherit (config) tui port;
-              settingsYaml = toYAMLFile (removeNullAndEmptyAttrs 
-                (config.settings // 
-                  { processes = 
-                    { 
-                      test = { disabled = false; availability.exit_on_end = true; }; 
-                    }; 
+              settingsYaml = toYAMLFile (removeNullAndEmptyAttrs
+                (config.settings //
+                  {
+                    processes =
+                      {
+                        test = { disabled = false; availability.exit_on_end = true; };
+                      };
                   }
                 ));
             }
