@@ -55,6 +55,8 @@ in
           runtimeInputs = [ config.package ];
           text = ''
             export PC_CONFIG_FILES=${settingsYaml}
+            echo "Starting process-compose ${name} on port ${builtins.toString port}"
+            cat ${settingsYaml}
             ${
               # Once the following issue is fixed we should be able to simply do:
               # export PC_DISABLE_TUI=${builtins.toJSON (!config.tui)}
@@ -71,7 +73,7 @@ in
           {
             inherit name;
             inherit (config) tui port;
-            settingsYaml = toYAMLFile (removeNullAndEmptyAttrs config.settings.processes);
+            settingsYaml = toYAMLFile (removeNullAndEmptyAttrs config.settings);
           };
       testPackage =
         if
@@ -82,7 +84,7 @@ in
               name = "${name}-test";
               inherit (config) tui port;
               settingsYaml = toYAMLFile (removeNullAndEmptyAttrs 
-                (config.settings.processes // 
+                (config.settings // 
                   { processes = 
                     { 
                       test = { disabled = false; availability.exit_on_end = true; }; 
