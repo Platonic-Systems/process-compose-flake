@@ -37,12 +37,24 @@ in
 
   config.outputs =
     let
-      mkProcessComposeWrapper = { name, tui, port, configFiles }:
+      removeNullAndEmptyAttrs = attrs:
+        let
+          f = lib.filterAttrsRecursive (key: value: value != null && value != { });
+          # filterAttrsRecursive doesn't delete the *resulting* empty attrs, so we must
+          # evaluate it again and to get rid of it.
+        in
+        lib.pipe attrs [ f f ];
+      toYAMLFile =
+        attrs:
+        pkgs.runCommand "${name}.yaml" { buildInputs = [ pkgs.yq-go ]; } ''
+          yq -oy -P '.' ${pkgs.writeTextFile { name = "process-compose-${name}.json"; text = (builtins.toJSON attrs); }} > $out
+        '';
+      mkProcessComposeWrapper = { name, tui, port, settingsYaml }:
         pkgs.writeShellApplication {
           inherit name;
           runtimeInputs = [ config.package ];
           text = ''
-            export PC_CONFIG_FILES=${lib.concatStringsSep "," configFiles}
+            export PC_CONFIG_FILES=${settingsYaml}
             ${
               # Once the following issue is fixed we should be able to simply do:
               # export PC_DISABLE_TUI=${builtins.toJSON (!config.tui)}
@@ -59,7 +71,7 @@ in
           {
             inherit name;
             inherit (config) tui port;
-            configFiles = [ config.outputs.settingsYaml ];
+            settingsYaml = toYAMLFile (removeNullAndEmptyAttrs config.settings.processes);
           };
       testPackage =
         if
@@ -69,7 +81,14 @@ in
             {
               name = "${name}-test";
               inherit (config) tui port;
-              configFiles = [ config.outputs.settingsYaml config.outputs.settingsYamlTestOverlay ];
+              settingsYaml = toYAMLFile (removeNullAndEmptyAttrs 
+                (config.settings.processes // 
+                  { processes = 
+                    { 
+                      test = { disabled = false; availability.exit_on_end = true; }; 
+                    }; 
+                  }
+                ));
             }
         else null;
     };
