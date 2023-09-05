@@ -116,14 +116,13 @@ in
     {
       settingsYaml = toYAMLFile (removeNullAndEmptyAttrs config.settings);
       settingsTestYaml = toYAMLFile (removeNullAndEmptyAttrs
-        (config.settings //
+        (lib.updateManyAttrsByPath [
           {
-            processes =
-              {
-                test = { disabled = false; availability.exit_on_end = true; };
-              };
+            path = [ "processes" "test" ];
+            update = old: old // { disabled = false; availability.exit_on_end = true; };
           }
-        ));
+        ]
+          config.settings));
     };
 }
 
