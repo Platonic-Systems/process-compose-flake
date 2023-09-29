@@ -97,6 +97,11 @@ in
       default = null;
     };
 
+    namespace = mkOption {
+      type = types.str;
+      default = "default";
+    };
+
     environment = import ./environment.nix { inherit lib; };
     log_location = mkOption {
       type = types.nullOr types.str;
