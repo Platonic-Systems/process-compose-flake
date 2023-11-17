@@ -3,7 +3,7 @@ A [flake-parts](https://github.com/hercules-ci/flake-parts) module for [process-
 
 ## Documentation
 
-https://zero-to-flakes.com/process-compose-flake
+https://flakular.in/process-compose-flake
 
 ## Contributing
 
