@@ -7,7 +7,14 @@ https://flakular.in/process-compose-flake
 
 ## Contributing
 
-Please run `nix run github:srid/nixci` on a NixOS machine to run the full suite of tests before pushing changes to the main branch. Our CI (Github Actions) cannot do this yet.
+Please run `nix run nixpkgs#nixci` on a NixOS machine to run the full suite of tests before pushing changes to the main branch. Our CI (Github Actions) cannot do this yet.
+
+## Discussion
+
+- Forum
+  - https://github.com/Platonic-Systems/process-compose-flake/discussions
+- Chat
+  - https://app.element.io/#/room/#flakular:matrix.org
 
 ## Related projects
 
