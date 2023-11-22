@@ -11,10 +11,8 @@ Please run `nix run nixpkgs#nixci` on a NixOS machine to run the full suite of t
 
 ## Discussion
 
-- Forum
-  - https://github.com/Platonic-Systems/process-compose-flake/discussions
-- Chat
-  - https://app.element.io/#/room/#flakular:matrix.org
+- [Zulip](https://nixos.zulipchat.com/#narrow/stream/414022-process-compose-flake)
+- [Matrix](https://app.element.io/#/room/#flakular:matrix.org)
 
 ## Related projects
 
