@@ -3,7 +3,7 @@ A [flake-parts](https://github.com/hercules-ci/flake-parts) module for [process-
 
 ## Documentation
 
-https://flakular.in/process-compose-flake
+https://community.flake.parts/process-compose-flake
 
 ## Contributing
 
@@ -12,7 +12,6 @@ Please run `nix run nixpkgs#nixci` on a NixOS machine to run the full suite of t
 ## Discussion
 
 - [Zulip](https://nixos.zulipchat.com/#narrow/stream/414022-process-compose-flake)
-- [Matrix](https://app.element.io/#/room/#flakular:matrix.org)
 
 ## Related projects
 
