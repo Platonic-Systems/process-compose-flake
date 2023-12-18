@@ -118,6 +118,11 @@ in
       default = null;
       example = true;
     };
+    is_foreground = mkOption {
+      type = types.nullOr types.bool;
+      default = null;
+      example = true;
+    };
     disabled = mkOption {
       type = types.nullOr types.bool;
       default = if name == "test" then true else null;
