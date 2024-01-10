@@ -79,6 +79,10 @@ Our submodule mirrors the [process-compose YAML schema](https://github.com/F1bon
 - `process-compose.<name>.processes.<name>.command`: The command string does not have access to the process environment, so if your command becomes shellscript-like you probably want to wrap it in a `pkgs.writeShellApplication` (see [\#22](https://github.com/Platonic-Systems/process-compose-flake/issues/22)).
 - `process-compose.<name>.shell`: This is set to `pkgs.bash` by default, obviating reproducibility issues due to depending on globally available bash.
 
+## See also
+
+- [process-compose docs](https://f1bonacc1.github.io/process-compose/launcher/)
+
 ## Related projects
 
 - [`proc-flake`](https://github.com/srid/proc-flake): A similar module that uses a `Procfile`-based runner. It is less feature-rich, but [at times more reliable](https://github.com/Platonic-Systems/process-compose-flake/issues/30) than process-compose.
