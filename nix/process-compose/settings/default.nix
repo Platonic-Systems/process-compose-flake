@@ -9,7 +9,7 @@ in
         modules = [{
           options = {
             processes = mkOption {
-              type = types.attrsOf (types.submodule ./process.nix);
+              type = types.attrsOf (types.submoduleWith { modules = [ ./process.nix ]; });
               default = { };
               description = ''
                 A map of process names to their configuration.
