@@ -10,6 +10,7 @@
     - #19: Reintroduce the `shell` option so process-compose doesn't rely on user's global bash (which doesn't exist nixosTest runners).
     - #22: `command` option is no longer wrapped in `writeShellApplication`.
     - #20: Fix definiton of `probe.exec`
+    - #53: Make process submodule a proper submodule (allowing use of `imports` etc)
 
 
 ## 0.1.0 (Jun 12, 2023)
