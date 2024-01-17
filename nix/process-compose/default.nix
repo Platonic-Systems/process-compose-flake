@@ -37,7 +37,7 @@ in
 
   config.outputs =
     let
-      mkProcessComposeWrapper = { name, tui, port, configFile }:
+      mkProcessComposeWrapper = { name, tui, apiServer, port, configFile }:
         pkgs.writeShellApplication {
           inherit name;
           runtimeInputs = [ config.package ];
@@ -49,6 +49,7 @@ in
               # https://github.com/F1bonacc1/process-compose/issues/75
               if tui then "" else "export PC_DISABLE_TUI=true"
             }
+            ${if apiServer then "" else "export PC_NO_SERVER=true"}
             exec process-compose -p ${toString port} "$@"
           '';
         };
@@ -58,7 +59,7 @@ in
         mkProcessComposeWrapper
           {
             inherit name;
-            inherit (config) tui port;
+            inherit (config) tui apiServer port;
             configFile = config.outputs.settingsYaml;
           };
       testPackage =
@@ -68,7 +69,7 @@ in
           mkProcessComposeWrapper
             {
               name = "${name}-test";
-              inherit (config) tui port;
+              inherit (config) tui apiServer port;
               configFile = config.outputs.settingsTestYaml;
             }
         else null;

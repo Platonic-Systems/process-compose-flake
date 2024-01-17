@@ -5,6 +5,11 @@ let
 in
 {
   options = {
+    apiServer = mkOption {
+      type = types.bool;
+      default = true;
+      description = "Enable or disable process-compose's Swagger API.";
+    };
     port = mkOption {
       type = types.int;
       default = 0;
