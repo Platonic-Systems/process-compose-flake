@@ -9,7 +9,6 @@
     - New options
       - #52: Add `is_foreground` option
       - #54: Add `apiServer` option to control REST API server
-      - #55: Add `initCommand` option to run commands before running process-compose
 - Fixes
     - #19: Reintroduce the `shell` option so process-compose doesn't rely on user's global bash (which doesn't exist nixosTest runners).
     - #22: `command` option is no longer wrapped in `writeShellApplication`.
