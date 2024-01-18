@@ -2,11 +2,12 @@
 
 rec {
   # Lookup an environment in process-compose environment list
+  # Returns null if environment doesn't otherwise.
   lookupEnv = name: envList:
     let
       env = parseEnvList envList;
     in
-    lib.getAttr name env;
+    lib.attrByPath [name] null env;
 
   # Parse "FOO=bar" into { FOO = "bar"; }
   parseEnv = s:
