@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ lib, ... }:
 
 let
   inherit (lib) types mkOption;
@@ -21,6 +21,13 @@ in
       type = types.bool;
       default = true;
       description = "Enable or disable the TUI for the application.";
+    };
+    initCommand = mkOption {
+      type = types.str;
+      default = "";
+      description = ''
+        Command to run before starting process-compose
+      '';
     };
   };
 }

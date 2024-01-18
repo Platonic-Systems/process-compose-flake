@@ -37,7 +37,7 @@ in
 
   config.outputs =
     let
-      mkProcessComposeWrapper = { name, tui, apiServer, port, configFile }:
+      mkProcessComposeWrapper = { name, tui, apiServer, port, initCommand, configFile }:
         pkgs.writeShellApplication {
           inherit name;
           runtimeInputs = [ config.package ];
@@ -50,6 +50,9 @@ in
               if tui then "" else "export PC_DISABLE_TUI=true"
             }
             ${if apiServer then "" else "export PC_NO_SERVER=true"}
+
+            ${initCommand}
+
             exec process-compose -p ${toString port} "$@"
           '';
         };
@@ -59,7 +62,7 @@ in
         mkProcessComposeWrapper
           {
             inherit name;
-            inherit (config) tui apiServer port;
+            inherit (config) tui apiServer port initCommand;
             configFile = config.outputs.settingsYaml;
           };
       testPackage =
@@ -69,7 +72,7 @@ in
           mkProcessComposeWrapper
             {
               name = "${name}-test";
-              inherit (config) tui apiServer port;
+              inherit (config) tui apiServer port initCommand;
               configFile = config.outputs.settingsTestYaml;
             }
         else null;
