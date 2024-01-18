@@ -1,4 +1,4 @@
-{ name, pkgs, lib, ... }:
+{ name, lib, ... }:
 
 let
   inherit (lib) types mkOption;
@@ -9,7 +9,7 @@ let
 in
 {
   options = {
-    command = import ./command.nix { inherit name pkgs lib; } {
+    command = import ./command.nix { inherit lib; } {
       description = ''
         The command or script or package that runs this process
 
