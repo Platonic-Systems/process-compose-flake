@@ -1,4 +1,4 @@
-{ name, pkgs, lib, ... }:
+{ lib, ... }:
 
 args:
 lib.mkOption (args // {

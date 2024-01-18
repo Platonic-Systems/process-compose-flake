@@ -22,9 +22,7 @@ in
       default = true;
       description = "Enable or disable the TUI for the application.";
     };
-    initCommand = mkOption {
-      type = types.str;
-      default = "";
+    initCommand =  import ./command.nix { inherit lib; }  {
       description = ''
         Command to run before starting process-compose
       '';
