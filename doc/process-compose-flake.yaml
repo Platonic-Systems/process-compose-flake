@@ -9,7 +9,7 @@ page:
 template:
   # You can add your own variables here, like editBaseUrl.
   # See after-note.tpl to see where editBaseUrl gets used.
-  editBaseUrl: https://github.com/Platonic-Systems/procss-compose-flake/edit/main/doc
+  editBaseUrl: https://github.com/Platonic-Systems/process-compose-flake/edit/main/doc
 
   # Uncomment this to get neuron-style pages
   # name: /templates/layouts/note
