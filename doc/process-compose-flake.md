@@ -1,7 +1,10 @@
 ---
-slug: /process-compose-flake
-sidebar_position: 3
-sidebar_label: Processes
+short-title: process-compose-flake
+template:
+  sidebar:
+    collapsed: true
+emanote:
+  folder-folgezettel: false
 ---
 
 # Process management using `process-compose-flake`
@@ -86,4 +89,4 @@ Our submodule mirrors the [process-compose YAML schema](https://github.com/F1bon
 ## Related projects
 
 - [`proc-flake`](https://github.com/srid/proc-flake): A similar module that uses a `Procfile`-based runner. It is less feature-rich, but [at times more reliable](https://github.com/Platonic-Systems/process-compose-flake/issues/30) than process-compose.
-- [`services-flake`](/services-flake): NixOS-like services built on top of process-compose-flake. 
+- [`services-flake`](https://community.flake.parts/services-flake): NixOS-like services built on top of process-compose-flake. 
