@@ -88,5 +88,6 @@ Our submodule mirrors the [process-compose YAML schema](https://github.com/F1bon
 
 ## Related projects
 
+- [`services-flake`](https://community.flake.parts/services-flake): NixOS-like services built on top of process-compose-flake. Use this if you want to run popular services (like postgres).
 - [`proc-flake`](https://github.com/srid/proc-flake): A similar module that uses a `Procfile`-based runner. It is less feature-rich, but [at times more reliable](https://github.com/Platonic-Systems/process-compose-flake/issues/30) than process-compose.
-- [`services-flake`](https://community.flake.parts/services-flake): NixOS-like services built on top of process-compose-flake. 
+
