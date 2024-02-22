@@ -106,16 +106,15 @@ in
           # evaluate it again and to get rid of it.
         in
         lib.pipe attrs [ f f ];
-      toYAMLFile =
-        attrs:
-        pkgs.runCommand "${name}.yaml" { buildInputs = [ pkgs.yq-go ]; } ''
-          yq -oy -P '.' ${pkgs.writeTextFile { name = "process-compose-${name}.json"; text = (builtins.toJSON attrs); }} > $out
-        '';
-
+      toPCJson = attrs:
+        pkgs.writeTextFile {
+          name = "process-compose-${name}.json";
+          text = builtins.toJSON attrs;
+        };
     in
     {
-      settingsYaml = toYAMLFile (removeNullAndEmptyAttrs config.settings);
-      settingsTestYaml = toYAMLFile (removeNullAndEmptyAttrs
+      settingsYaml = toPCJson (removeNullAndEmptyAttrs config.settings);
+      settingsTestYaml = toPCJson (removeNullAndEmptyAttrs
         (lib.updateManyAttrsByPath [
           {
             path = [ "processes" "test" ];
