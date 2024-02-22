@@ -87,12 +87,15 @@ in
         Which runs process-compose with the declared config.
       '';
     };
-    outputs.settingsYaml = mkOption {
+    outputs.settingsFile = mkOption {
       type = types.attrsOf types.raw;
       internal = true;
+      description = ''
+        The settings file that will be used to run the process-compose flake.
+      '';
     };
 
-    outputs.settingsTestYaml = mkOption {
+    outputs.settingsTestFile = mkOption {
       type = types.attrsOf types.raw;
       internal = true;
     };
@@ -113,8 +116,8 @@ in
         };
     in
     {
-      settingsYaml = toPCJson (removeNullAndEmptyAttrs config.settings);
-      settingsTestYaml = toPCJson (removeNullAndEmptyAttrs
+      settingsFile = toPCJson (removeNullAndEmptyAttrs config.settings);
+      settingsTestFile = toPCJson (removeNullAndEmptyAttrs
         (lib.updateManyAttrsByPath [
           {
             path = [ "processes" "test" ];
