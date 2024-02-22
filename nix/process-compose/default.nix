@@ -65,7 +65,7 @@ in
           {
             inherit name;
             inherit (config) tui apiServer port preHook postHook;
-            configFile = config.outputs.settingsYaml;
+            configFile = config.outputs.settingsFile;
           };
       testPackage =
         if
@@ -75,7 +75,7 @@ in
             {
               name = "${name}-test";
               inherit (config) tui apiServer port preHook postHook;
-              configFile = config.outputs.settingsTestYaml;
+              configFile = config.outputs.settingsTestFile;
             }
         else null;
     };

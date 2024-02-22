@@ -87,12 +87,15 @@ in
         Which runs process-compose with the declared config.
       '';
     };
-    outputs.settingsYaml = mkOption {
+    outputs.settingsFile = mkOption {
       type = types.attrsOf types.raw;
       internal = true;
+      description = ''
+        The settings file that will be used to run the process-compose flake.
+      '';
     };
 
-    outputs.settingsTestYaml = mkOption {
+    outputs.settingsTestFile = mkOption {
       type = types.attrsOf types.raw;
       internal = true;
     };
@@ -106,16 +109,15 @@ in
           # evaluate it again and to get rid of it.
         in
         lib.pipe attrs [ f f ];
-      toYAMLFile =
-        attrs:
-        pkgs.runCommand "${name}.yaml" { buildInputs = [ pkgs.yq-go ]; } ''
-          yq -oy -P '.' ${pkgs.writeTextFile { name = "process-compose-${name}.json"; text = (builtins.toJSON attrs); }} > $out
-        '';
-
+      toPCJson = attrs:
+        pkgs.writeTextFile {
+          name = "process-compose-${name}.json";
+          text = builtins.toJSON attrs;
+        };
     in
     {
-      settingsYaml = toYAMLFile (removeNullAndEmptyAttrs config.settings);
-      settingsTestYaml = toYAMLFile (removeNullAndEmptyAttrs
+      settingsFile = toPCJson (removeNullAndEmptyAttrs config.settings);
+      settingsTestFile = toPCJson (removeNullAndEmptyAttrs
         (lib.updateManyAttrsByPath [
           {
             path = [ "processes" "test" ];
