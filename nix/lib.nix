@@ -7,7 +7,7 @@ rec {
     let
       env = parseEnvList envList;
     in
-    lib.attrByPath [name] null env;
+    lib.attrByPath [ name ] null env;
 
   # Parse "FOO=bar" into { FOO = "bar"; }
   parseEnv = s:
