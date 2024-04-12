@@ -15,6 +15,10 @@
         inherit overrideInputs;
         dir = "example";
       };
+      dev = {
+        inherit overrideInputs;
+        dir = "dev";
+      };
     };
   };
 }

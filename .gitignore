@@ -1,3 +1,5 @@
+/.direnv
+
 /example/data.sqlite*
 /example/result
 
