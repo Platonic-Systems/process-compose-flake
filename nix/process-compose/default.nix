@@ -37,7 +37,19 @@ in
 
   config.outputs =
     let
-      mkProcessComposeWrapper = { name, tui, apiServer, port, configFile, preHook, postHook }:
+      mkProcessComposeWrapper = { name, tui, apiServer, configFile, preHook, postHook, server }:
+        let
+          portSet = if server.port != null then true else false;
+          udsSet = if server.uds != false then true else false;
+          portFlag = if portSet then "-p ${toString server.port}" else "";
+          udsFlagPid = if (udsSet && (builtins.isBool server.uds)) then "-U" else "";
+          udsFlagCustom = if builtins.isString server.uds then "--unix-socket ${server.uds}" else "";
+          serverFlag =
+            if (portSet && udsSet) then
+              builtins.throw "Only one of port or uds can be set"
+            else
+              "${portFlag}${udsFlagPid}${udsFlagCustom}";
+        in
         pkgs.writeShellApplication {
           inherit name;
           runtimeInputs = [ config.package ];
@@ -53,7 +65,7 @@ in
 
             ${preHook}
 
-            process-compose -p ${toString port} "$@"
+            process-compose ${serverFlag} "$@"
 
             ${postHook}
           '';
@@ -64,7 +76,7 @@ in
         mkProcessComposeWrapper
           {
             inherit name;
-            inherit (config) tui apiServer port preHook postHook;
+            inherit (config) tui apiServer preHook postHook server;
             configFile = config.outputs.settingsFile;
           };
       testPackage =
@@ -74,7 +86,7 @@ in
           mkProcessComposeWrapper
             {
               name = "${name}-test";
-              inherit (config) tui apiServer port preHook postHook;
+              inherit (config) tui apiServer preHook postHook server;
               configFile = config.outputs.settingsTestFile;
             }
         else null;

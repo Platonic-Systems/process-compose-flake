@@ -4,34 +4,43 @@ let
   inherit (lib) types mkOption;
 in
 {
-  options = {
-    apiServer = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Enable or disable process-compose's Swagger API.";
+  options =
+    {
+      apiServer = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Enable or disable process-compose's Swagger API.";
+      };
+      preHook = mkOption {
+        type = types.lines;
+        default = "";
+        description = "Shell commands to run before process-compose starts.";
+      };
+      postHook = mkOption {
+        type = types.lines;
+        default = "";
+        description = "Shell commands to run after process-compose completes.";
+      };
+      server = mkOption {
+        type = types.submodule {
+          options = {
+            port = lib.mkOption {
+              type = types.nullOr types.port;
+              default = null;
+            };
+            uds = lib.mkOption {
+              type = types.nullOr (types.either types.bool types.str);
+              default = null;
+            };
+          };
+        };
+        default = { };
+      };
+      tui = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Enable or disable the TUI for the application.";
+      };
     };
-    preHook = mkOption {
-      type = types.lines;
-      default = "";
-      description = "Shell commands to run before process-compose starts.";
-    };
-    port = mkOption {
-      type = types.int;
-      default = 0;
-      description = ''
-        Port to serve process-compose's Swagger API on.
-      '';
-    };
-    postHook = mkOption {
-      type = types.lines;
-      default = "";
-      description = "Shell commands to run after process-compose completes.";
-    };
-    tui = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Enable or disable the TUI for the application.";
-    };
-  };
 }
 
