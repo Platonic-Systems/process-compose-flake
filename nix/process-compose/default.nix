@@ -37,7 +37,7 @@ in
 
   config.outputs =
     let
-      mkProcessComposeWrapper = { name, tui, configFile, preHook, postHook, httpServer }:
+      mkProcessComposeWrapper = { name, tui, httpServer, configFile, preHook, postHook }:
         pkgs.writeShellApplication {
           inherit name;
           runtimeInputs = [ config.package ];
