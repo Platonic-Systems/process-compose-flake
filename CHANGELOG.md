@@ -8,7 +8,8 @@
     - #55: Add `lib` flake output - library of useful functions
     - New options
       - #52: Add `is_foreground` option
-      - #54: Add `apiServer` option to control REST API server
+      - ~~#54: Add `apiServer` option to control REST API server~~
+      - $60: Add `httpServer.{enable, port, uds}` options to control the HTTP server.
       - #56: Add `preHook` and `postHook` for running commands before and after launching process-compose respectively.
 - Notable changes
     - #58: Obviate IFD by switching to JSON config
