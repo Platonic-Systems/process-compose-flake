@@ -37,7 +37,7 @@ in
 
   config.outputs =
     let
-      mkProcessComposeWrapper = { name, tui, configFile, preHook, postHook, server }:
+      mkProcessComposeWrapper = { name, tui, configFile, preHook, postHook, httpServer }:
         pkgs.writeShellApplication {
           inherit name;
           runtimeInputs = [ config.package ];
@@ -51,7 +51,7 @@ in
             }
             ${preHook}
 
-            process-compose ${server.outputs.cliOpts} "$@"
+            process-compose ${httpServer.outputs.cliOpts} "$@"
 
             ${postHook}
           '';
@@ -62,7 +62,7 @@ in
         mkProcessComposeWrapper
           {
             inherit name;
-            inherit (config) tui preHook postHook server;
+            inherit (config) tui preHook postHook httpServer;
             configFile = config.outputs.settingsFile;
           };
       testPackage =
@@ -72,7 +72,7 @@ in
           mkProcessComposeWrapper
             {
               name = "${name}-test";
-              inherit (config) tui preHook postHook server;
+              inherit (config) tui preHook postHook httpServer;
               configFile = config.outputs.settingsTestFile;
             }
         else null;
