@@ -25,7 +25,7 @@ in
         description = ''
           Configuration for the process-compose server.
         '';
-        type = types.submodule {
+        type = types.submodule ({ config, ... }: {
           options = {
             port = lib.mkOption {
               type = types.nullOr types.port;
@@ -35,8 +35,8 @@ in
               '';
             };
             uds = lib.mkOption {
-              type = types.nullOr (types.either types.bool types.str);
-              default = null;
+              type = types.either types.bool types.str;
+              default = false;
               description = ''
                 UDP socket to serve process-compose's Swagger API on.
 
@@ -45,8 +45,17 @@ in
                 specified location.
               '';
             };
+            outputs.cliOpts = lib.mkOption {
+              type = types.str;
+              internal = true;
+              readOnly = true;
+              default = ''
+                ${if config.port != null then "--port ${builtins.toString config.port}" else ""} \
+                ${if builtins.isBool config.uds then if config.uds then "-U" else "" else "--unix-socket ${config.uds}"} \
+              '';
+            };
           };
-        };
+        });
         default = { };
       };
       tui = mkOption {

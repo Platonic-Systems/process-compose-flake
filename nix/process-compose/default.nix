@@ -38,18 +38,6 @@ in
   config.outputs =
     let
       mkProcessComposeWrapper = { name, tui, apiServer, configFile, preHook, postHook, server }:
-        let
-          portSet = if server.port != null then true else false;
-          udsSet = if server.uds != false then true else false;
-          portFlag = if portSet then "-p ${toString server.port}" else "";
-          udsFlagPid = if (udsSet && (builtins.isBool server.uds)) then "-U" else "";
-          udsFlagCustom = if builtins.isString server.uds then "--unix-socket ${server.uds}" else "";
-          serverFlag =
-            if (portSet && udsSet) then
-              builtins.throw "Only one of port or uds can be set"
-            else
-              "${portFlag}${udsFlagPid}${udsFlagCustom}";
-        in
         pkgs.writeShellApplication {
           inherit name;
           runtimeInputs = [ config.package ];
@@ -65,7 +53,7 @@ in
 
             ${preHook}
 
-            process-compose ${serverFlag} "$@"
+            process-compose ${server.outputs.cliOpts} "$@"
 
             ${postHook}
           '';
