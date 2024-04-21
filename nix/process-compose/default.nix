@@ -62,7 +62,7 @@ in
         mkProcessComposeWrapper
           {
             inherit name;
-            inherit (config) tui preHook postHook httpServer;
+            inherit (config) tui httpServer preHook postHook;
             configFile = config.outputs.settingsFile;
           };
       testPackage =
@@ -72,7 +72,7 @@ in
           mkProcessComposeWrapper
             {
               name = "${name}-test";
-              inherit (config) tui preHook postHook httpServer;
+              inherit (config) tui httpServer preHook postHook;
               configFile = config.outputs.settingsTestFile;
             }
         else null;
