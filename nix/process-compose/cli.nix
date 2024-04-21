@@ -16,6 +16,10 @@ in
         default = "";
         description = "Shell commands to run after process-compose completes.";
       };
+
+      # This must be grouped because, even though upstream doesn't group them in
+      # CLI opts, it does so in the source code:
+      # https://github.com/F1bonacc1/process-compose/blob/5a7b83ed8a0f6be58efa9e4940ff41517892eca2/src/cmd/root.go#L136-L144
       server = mkOption {
         description = ''
           Configuration for the process-compose server.
