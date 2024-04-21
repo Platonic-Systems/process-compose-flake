@@ -37,7 +37,7 @@ in
 
   config.outputs =
     let
-      mkProcessComposeWrapper = { name, tui, apiServer, port, configFile, preHook, postHook }:
+      mkProcessComposeWrapper = { name, tui, httpServer, configFile, preHook, postHook }:
         pkgs.writeShellApplication {
           inherit name;
           runtimeInputs = [ config.package ];
@@ -49,11 +49,9 @@ in
               # https://github.com/F1bonacc1/process-compose/issues/75
               if tui then "" else "export PC_DISABLE_TUI=true"
             }
-            ${if apiServer then "" else "export PC_NO_SERVER=true"}
-
             ${preHook}
 
-            process-compose -p ${toString port} "$@"
+            set -x; process-compose ${httpServer.outputs.cliOpts} "$@"; set +x
 
             ${postHook}
           '';
@@ -64,7 +62,7 @@ in
         mkProcessComposeWrapper
           {
             inherit name;
-            inherit (config) tui apiServer port preHook postHook;
+            inherit (config) tui httpServer preHook postHook;
             configFile = config.outputs.settingsFile;
           };
       testPackage =
@@ -74,7 +72,7 @@ in
           mkProcessComposeWrapper
             {
               name = "${name}-test";
-              inherit (config) tui apiServer port preHook postHook;
+              inherit (config) tui httpServer preHook postHook;
               configFile = config.outputs.settingsTestFile;
             }
         else null;
