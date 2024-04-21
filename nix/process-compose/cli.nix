@@ -6,11 +6,6 @@ in
 {
   options =
     {
-      apiServer = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Enable or disable process-compose's Swagger API.";
-      };
       preHook = mkOption {
         type = types.lines;
         default = "";
@@ -27,6 +22,7 @@ in
         '';
         type = types.submodule ({ config, ... }: {
           options = {
+            enable = lib.mkEnableOption "Enable the HTTP server";
             port = lib.mkOption {
               type = types.nullOr types.port;
               default = null;
@@ -49,7 +45,7 @@ in
               type = types.str;
               internal = true;
               readOnly = true;
-              default = ''
+              default = lib.optionalString config.enable ''
                 ${if config.port != null then "--port ${builtins.toString config.port}" else ""} \
                 ${if builtins.isBool config.uds then if config.uds then "-U" else "" else "--unix-socket ${config.uds}"} \
               '';
