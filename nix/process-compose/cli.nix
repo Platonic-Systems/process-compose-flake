@@ -27,6 +27,9 @@ in
         type = types.submodule ({ config, ... }: {
           options = {
             enable = lib.mkEnableOption "Enable the HTTP server";
+
+            # TODO: port and uds should form an enum of submodules
+            # But we can't implement it until https://github.com/NixOS/nixpkgs/pull/254790 lands
             port = lib.mkOption {
               type = types.nullOr types.port;
               default = null;
