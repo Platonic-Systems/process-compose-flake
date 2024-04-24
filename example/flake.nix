@@ -23,6 +23,7 @@
             dataFile = "data.sqlite";
           in
           {
+            # httpServer.enable = true;
             settings = {
               environment = {
                 SQLITE_WEB_PASSWORD = "demo";

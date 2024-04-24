@@ -52,10 +52,14 @@ in
               type = types.str;
               internal = true;
               readOnly = true;
-              default = lib.optionalString config.enable ''
-                ${if config.port != null then "--port ${builtins.toString config.port}" else ""} \
-                ${if builtins.isBool config.uds then if config.uds then "-U" else "" else "--unix-socket ${config.uds}"} \
-              '';
+              default =
+                if config.enable
+                then ''
+                  ${if config.port != null then "--port ${builtins.toString config.port}" else ""} \
+                  ${if builtins.isBool config.uds then if config.uds then "-U" else "" else "--unix-socket ${config.uds}"} \
+                '' else ''
+                  --no-server \
+                '';
             };
           };
         });
