@@ -51,7 +51,7 @@ in
             }
             ${preHook}
 
-            set -x; process-compose ${httpServer.outputs.cliOpts} "$@"; set +x
+            set -x; set +e; process-compose ${httpServer.outputs.cliOpts} "$@"; set +x; set -e
 
             ${postHook}
           '';
