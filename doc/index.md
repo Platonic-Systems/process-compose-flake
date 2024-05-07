@@ -55,6 +55,32 @@ process-compose.watch-server = {
 };
 ```
 
+### preHook
+
+If you'd like to run certain commands before starting the processes, you can add them to `preHook`:
+
+```nix
+process-compose.watch-server = {
+  preHook = ''
+    # Cleanup on EXIT, this runs irrespective of exit-code of process-compose
+    trap "rm -rf ./data" EXIT
+    export USER=foo
+  '';
+};
+```
+
+### postHook
+
+Or if you'd like to run certain commands upon successful execution of `process-compose`, i.e exits with `exit-code: 0`, then add them to `postHook`:
+
+```nix
+process-compose.watch-server = {
+  postHook = ''
+    cat foo.txt
+  '';
+};
+```
+
 `process-compose-flake` will generate the `packages.${system}.watch-server` output for you.
 
 You can then spin up the processes by running `nix run .#watch-server`.
@@ -73,6 +99,10 @@ devShells = {
 ```
 
 You can enter your devShell by running `nix develop` and run `watch-server` to run your processes.
+
+### preHook
+
+
 
 ## Module API
 
