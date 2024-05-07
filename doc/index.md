@@ -55,6 +55,25 @@ process-compose.watch-server = {
 };
 ```
 
+`process-compose-flake` will generate the `packages.${system}.watch-server` output for you.
+
+You can then spin up the processes by running `nix run .#watch-server`.
+
+The `package` output in turn can be used to make the `watch-server` command available in your `devShell`:
+
+```nix
+devShells = {
+  default = pkgs.mkShell {
+    name = "my-shell";
+    nativeBuildInputs = [
+      self'.packages.watch-server
+    ];
+  };
+};
+```
+
+You can enter your devShell by running `nix develop` and run `watch-server` to run your processes.
+
 ### preHook
 
 If you'd like to run certain commands before starting the processes, you can add them to `preHook`:
@@ -80,29 +99,6 @@ process-compose.watch-server = {
   '';
 };
 ```
-
-`process-compose-flake` will generate the `packages.${system}.watch-server` output for you.
-
-You can then spin up the processes by running `nix run .#watch-server`.
-
-The `package` output in turn can be used to make the `watch-server` command available in your `devShell`:
-
-```nix
-devShells = {
-  default = pkgs.mkShell {
-    name = "my-shell";
-    nativeBuildInputs = [
-      self'.packages.watch-server
-    ];
-  };
-};
-```
-
-You can enter your devShell by running `nix develop` and run `watch-server` to run your processes.
-
-### preHook
-
-
 
 ## Module API
 
