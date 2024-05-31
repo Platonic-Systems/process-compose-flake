@@ -28,6 +28,7 @@ in
               "process_completed"
               "process_completed_successfully"
               "process_healthy"
+              "process_log_ready"
               "process_started"
             ];
             example = "process_healthy";
