@@ -133,6 +133,11 @@ in
         The settings used to check if the process is alive.
       '';
     };
+    ready_log_line = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      example = "process is ready";
+    };
 
     namespace = mkOption {
       type = types.str;
