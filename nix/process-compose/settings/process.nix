@@ -139,6 +139,11 @@ in
       default = null;
       example = "process is ready";
     };
+    ready_log_line = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      example = "process is ready";
+    };
 
     namespace = mkOption {
       type = types.str;
