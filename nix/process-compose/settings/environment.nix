@@ -15,6 +15,8 @@ lib.mkOption {
     List of strings is also allowed.
   '';
   apply = attrs:
-    if ! builtins.isAttrs attrs then attrs else
-    lib.mapAttrsToList (name: value: "${name}=${value}") attrs;
+    if builtins.isAttrs attrs then
+      lib.mapAttrsToList (name: value: "${name}=${value}") attrs
+    else
+      attrs;
 }

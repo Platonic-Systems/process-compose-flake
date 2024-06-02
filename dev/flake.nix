@@ -20,6 +20,9 @@
           };
         };
         devShells.default = pkgs.mkShell {
+          packages = with pkgs; [
+            nixd
+          ];
           inputsFrom = [
             config.treefmt.build.devShell
           ];
