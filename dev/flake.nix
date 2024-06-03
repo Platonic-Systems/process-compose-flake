@@ -21,11 +21,17 @@
         };
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
+            just
             nixd
           ];
           inputsFrom = [
             config.treefmt.build.devShell
           ];
+          shellHook = ''
+            echo
+            echo "🍎🍎 Run 'just <recipe>' to get started"
+            just
+          '';
         };
       };
     };
