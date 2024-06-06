@@ -5,6 +5,11 @@ in
 {
   options = {
     outputs.check = mkOption {
+      description = ''
+        Run the `process-compose` package with `test` process Enabled.
+
+        Note: This is meant to be run in CI.
+      '';
       type = types.nullOr types.package;
       default =
         if (config.outputs.testPackage != null) then

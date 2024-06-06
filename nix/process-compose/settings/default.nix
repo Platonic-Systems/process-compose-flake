@@ -5,6 +5,7 @@ in
 {
   options = {
     settings = mkOption {
+      default = { };
       type = types.submoduleWith {
         modules = [{
           options = {
@@ -22,6 +23,9 @@ in
               type = types.nullOr types.ints.unsigned;
               default = null;
               example = 3000;
+              description = ''
+                Log length to display in TUI mode.
+              '';
             };
             log_level = mkOption {
               type = types.nullOr (types.enum [
@@ -35,11 +39,17 @@ in
               ]);
               default = null;
               example = "info";
+              description = ''
+                Level of logs to output.
+              '';
             };
             log_location = mkOption {
               type = types.nullOr types.str;
               default = null;
               example = "./pc.log";
+              description = ''
+                File to write the logs to.
+              '';
             };
 
             shell = {
@@ -47,6 +57,9 @@ in
                 type = types.str;
                 default = "-c";
                 example = "-c";
+                description = ''
+                  Arguments to pass to the shell given by `shell_command`.
+                '';
               };
               shell_command = mkOption {
                 type = types.str;
@@ -57,6 +70,7 @@ in
                   `pkgs.bash`.
                 '';
                 default = lib.getExe pkgs.bash;
+                defaultText = "lib.getExe pkgs.bash";
               };
             };
 
@@ -64,6 +78,9 @@ in
               type = types.nullOr types.str;
               default = null;
               example = "0.5";
+              description = ''
+                Version of the process-compose configuration.
+              '';
             };
           };
         }];
