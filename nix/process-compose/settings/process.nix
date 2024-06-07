@@ -138,11 +138,12 @@ in
       type = types.nullOr types.str;
       default = null;
       example = "process is ready";
-    };
-    ready_log_line = mkOption {
-      type = types.nullOr types.str;
-      default = null;
-      example = "process is ready";
+      description = ''
+        A string to search for in the output of the command that indicates
+        the process is ready. String will be part of a regex '.*{ready_log_line}.*'.
+        This should be used for long running processes that do not have a
+        readily accessible check for http or similar other checks.
+      '';
     };
 
     namespace = mkOption {
