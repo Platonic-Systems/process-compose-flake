@@ -28,6 +28,7 @@ in
               "process_completed"
               "process_completed_successfully"
               "process_healthy"
+              "process_log_ready"
               "process_started"
             ];
             example = "process_healthy";
@@ -131,6 +132,17 @@ in
       default = null;
       description = ''
         The settings used to check if the process is alive.
+      '';
+    };
+    ready_log_line = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      example = "process is ready";
+      description = ''
+        A string to search for in the output of the command that indicates
+        the process is ready. String will be part of a regex '.*{ready_log_line}.*'.
+        This should be used for long running processes that do not have a
+        readily accessible check for http or similar other checks.
       '';
     };
 
