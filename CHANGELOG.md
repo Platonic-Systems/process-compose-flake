@@ -11,6 +11,7 @@
       - ~~#54: Add `apiServer` option to control REST API server~~
       - $60: Add `httpServer.{enable, port, uds}` options to control the HTTP server.
       - #56: Add `preHook` and `postHook` for running commands before and after launching process-compose respectively.
+      - #67: Add `ready_log_line`
 - Notable changes
     - #58: Obviate IFD by switching to JSON config
 - Fixes
