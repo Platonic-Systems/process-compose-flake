@@ -63,6 +63,15 @@ in
           Whether to gracefully stop all the processes upon the exit of the current process.
         '';
       };
+      # Added to process-compose in https://github.com/F1bonacc1/process-compose/pull/226
+      exit_on_skipped = mkOption {
+        type = types.nullOr types.bool;
+        default = null;
+        example = true;
+        description = ''
+          Whether to gracefully stop all the processes upon the process being skipped.
+        '';
+      };
       backoff_seconds = mkOption {
         type = types.nullOr types.ints.unsigned;
         default = null;
