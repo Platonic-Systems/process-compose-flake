@@ -12,6 +12,7 @@
       - $60: Add `httpServer.{enable, port, uds}` options to control the HTTP server.
       - #56: Add `preHook` and `postHook` for running commands before and after launching process-compose respectively.
       - #67: Add `ready_log_line`
+      - #226: Add `availability.exit_on_skipped`
 - Notable changes
     - #58: Obviate IFD by switching to JSON config
 - Fixes
