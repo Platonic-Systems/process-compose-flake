@@ -203,6 +203,14 @@ in
         - In TUI mode, a local process will be started.
       '';
     };
+    is_tty = mkOption {
+      type = types.nullOr types.bool;
+      default = null;
+      example = true;
+      description = ''
+        Simulate TTY mode for this process
+      '';
+    };
     disabled = mkOption {
       type = types.nullOr types.bool;
       default = if name == "test" then true else null;
