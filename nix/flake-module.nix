@@ -16,7 +16,10 @@ in
           executables from process-compose configurations written as Nix attribute sets.
         '';
         type = types.attrsOf (types.submoduleWith {
-          specialArgs = { inherit pkgs; };
+          specialArgs = {
+            inherit pkgs;
+            process-compose-flake-lib = (import ./process-compose-flake-lib.nix) { inherit lib types; };
+          };
           modules = [
             ./process-compose
           ];
