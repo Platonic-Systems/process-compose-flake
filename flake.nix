@@ -3,6 +3,7 @@
     flakeModule = ./nix/flake-module.nix;
 
     lib = ./nix/lib.nix;
+    evalModules = import ./nix/eval-modules.nix;
 
     templates.default = {
       description = "Example flake using process-compose-flake";
