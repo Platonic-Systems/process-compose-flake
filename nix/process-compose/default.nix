@@ -44,7 +44,15 @@ in
           text = ''
             ${preHook}
 
-            set -x; process-compose ${arguments.global} ${arguments.up}"$@"; set +x
+            params=(${arguments.global})
+            set +u
+            if [ -z "$1" ] || [[ "$1" == "up" ]] || [[ "$1" == -* ]] ; then
+              params+=(${arguments.up})
+            fi
+
+            set -x;
+            process-compose "''${params[@]}" "$@";
+            set +x
 
             ${postHook}
           '';
