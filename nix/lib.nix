@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ pkgs, lib ? pkgs.lib, ... }:
 
 rec {
   # Lookup an environment in process-compose environment list
@@ -31,4 +31,23 @@ rec {
   types = {
     command = import ./process-compose/setting/command.nix { inherit lib; };
   };
+
+  # Run the process-compose-module stand-alone, without flake-parts
+  # - modules: list of modules that set process-compose-flake options
+  # - name: name of the module, you typically don't need to set this
+  # Returns the full result of the module evaluation
+  evalModules = { name ? "process-compose", modules }: (lib.evalModules {
+    specialArgs = {
+      inherit name pkgs;
+    };
+    modules = [
+      ./process-compose
+    ] ++ modules;
+  });
+
+  # Same as evalModules, but returns the process-compose process directly
+  makeProcessCompose = { name ? "process-compose", modules }: (evalModules {
+    inherit name;
+    modules = modules;
+  }).config.outputs.package;
 }

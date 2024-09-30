@@ -76,6 +76,22 @@
               };
             };
           };
+
+        # nix run .#ponysay up to start the process
+        packages.ponysay = (import inputs.process-compose-flake.lib { inherit pkgs; }).makeProcessCompose {
+          modules = [{
+            settings = {
+              processes = {
+                ponysay.command = ''
+                  while true; do
+                    ${lib.getExe pkgs.ponysay} "Hi!"
+                    sleep 2
+                  done
+                '';
+              };
+            };
+          }];
+        };
       };
     };
 }
