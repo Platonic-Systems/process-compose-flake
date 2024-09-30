@@ -78,11 +78,8 @@
           };
 
         # nix run .#ponysay up to start the process
-        packages.ponysay = inputs.process-compose-flake.lib.makeProcessCompose {
-          inherit pkgs;
-          name = "ponysay";
+        packages.ponysay = (import inputs.process-compose-flake.lib { inherit pkgs; }).makeProcessCompose {
           modules = [{
-            arguments.detached = true;
             settings = {
               processes = {
                 ponysay.command = ''

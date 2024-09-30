@@ -46,8 +46,8 @@ rec {
   });
 
   # Same as evalModules, but returns the process-compose process directly
-  makeProcessCompose = { name, modules }: (evalModules {
-    inherit pkgs name;
+  makeProcessCompose = { name ? "process-compose", modules }: (evalModules {
+    inherit name;
     modules = modules;
   }).config.outputs.package;
 }
