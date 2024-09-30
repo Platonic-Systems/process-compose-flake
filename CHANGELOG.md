@@ -6,7 +6,7 @@
     - ~~#18: Add `testScript` option for adding flake checks based on nixosTest library.~~
     - #39: Allow `test` process to act as a test, which then gets run as part of flake checks.
     - #55: Add `lib` flake output - library of useful functions
-        - #80: Add `evalMoules`, to use process-compose-flake without flake-parts
+        - #80: Add `evalModules`, to use process-compose-flake without flake-parts
     - New options
       - #52: Add `is_foreground` option
       - ~~#54: Add `apiServer` option to control REST API server~~
