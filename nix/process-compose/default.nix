@@ -37,6 +37,31 @@ in
 
   config.outputs =
     let
+      mkGlobalArgs = config: lib.escapeShellArgs (
+        (lib.optionals (config.log-file != "") [ "--log-file" config.log-file ])
+        ++ (lib.optionals config.no-server [ "--no-server" ])
+        ++ (lib.optionals config.ordered-shutdown [ "--ordered-shutdown" ])
+        ++ (lib.optionals (config.port != null) [ "--port" "${builtins.toString config.port}" ])
+        ++ (lib.optionals config.read-only [ "--read-only" ])
+        ++ (lib.optionals (config.unix-socket != "") [ "--unix-socket" config.unix-socket ])
+        ++ (lib.optionals config.use-uds [ "--use-uds" ])
+      );
+      mkUpArgs = config: lib.escapeShellArgs (
+        (lib.concatMap (v: [ "--config" v ]) config.config)
+        ++ (lib.optionals config.detached [ "--detached" ])
+        ++ (lib.optionals config.disable-dotenv [ "--disable-dotenv" ])
+        ++ (lib.concatMap (v: [ "--env" v ]) config.env)
+        ++ (lib.optionals config.hide-disabled [ "--hide-disabled" ])
+        ++ (lib.optionals config.keep-project [ "--keep-project" ])
+        ++ (lib.concatMap (v: [ "--namespace" v ]) config.namespace)
+        ++ (lib.optionals config.no-deps [ "--no-deps" ])
+        ++ (lib.optionals (config.ref-rate != "") [ "--ref-rate" config.ref-rate ])
+        ++ (lib.optionals config.reverse [ "--reverse" ])
+        ++ (lib.optionals (config.sort != "") [ "--sort" config.sort ])
+        ++ (lib.optionals (config.theme != "") [ "--theme" config.theme ])
+        ++ (lib.optionals config.reverse [ "--reverse" ])
+        ++ (lib.optionals (!config.tui) [ "--tui=false" ])
+      );
       mkProcessComposeWrapper = { name, arguments, preHook, postHook, }:
         pkgs.writeShellApplication {
           inherit name;
@@ -44,7 +69,7 @@ in
           text = ''
             ${preHook}
 
-            set -x; process-compose ${arguments.global} ${arguments.up} "$@"; set +x
+            set -x; process-compose ${mkGlobalArgs arguments} ${mkUpArgs arguments} "$@"; set +x
 
             ${postHook}
           '';
@@ -56,7 +81,7 @@ in
           {
             inherit name;
             inherit (config) preHook postHook;
-            arguments = config.arguments.output;
+            arguments = config.arguments;
           };
       testPackage =
         if
@@ -66,7 +91,7 @@ in
             {
               name = "${name}-test";
               inherit (config) preHook postHook;
-              arguments = config.test-arguments.output;
+              arguments = config.test-arguments;
             }
         else null;
     };
