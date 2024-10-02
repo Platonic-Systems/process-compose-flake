@@ -2,6 +2,7 @@
 
 let
   inherit (lib) types mkOption;
+  cliOptions = import ./cli-options.nix { inherit lib; };
 in
 {
   options =
@@ -57,21 +58,25 @@ in
         default = true;
         description = "Enable or disable the TUI for the application.";
       };
-      arguments = process-compose-flake-lib.mkProcessComposeArgumentsOption { };
-      test-arguments = process-compose-flake-lib.mkProcessComposeArgumentsOption { };
+      cli = cliOptions;
+      test-cli = cliOptions;
     };
   config = {
-    arguments = lib.mkMerge [{
-      tui = config.tui;
-      port = config.httpServer.port;
-      use-uds = config.httpServer.uds != false;
-      unix-socket = if builtins.isString config.httpServer.uds then config.httpServer.uds else "";
-      no-server = if config.httpServer.enable == true then false else true;
-      config = [ "${config.outputs.settingsFile}" ];
+    cli = lib.mkMerge [{
+      up = {
+        config = [ "${config.outputs.settingsFile}" ];
+        tui = config.tui;
+      };
+      global = {
+        port = config.httpServer.port;
+        use-uds = config.httpServer.uds != false;
+        unix-socket = if builtins.isString config.httpServer.uds then config.httpServer.uds else "";
+        no-server = if config.httpServer.enable == true then false else true;
+      };
     }];
-    test-arguments = lib.mkMerge [
-      (config.arguments // {
-        config = [ "${config.outputs.settingsTestFile}" ];
+    test-cli = lib.mkMerge [
+      (lib.attrsets.recursiveUpdate config.cli {
+        up.config = [ "${config.outputs.settingsTestFile}" ];
       })
     ];
   };

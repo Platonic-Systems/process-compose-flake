@@ -18,7 +18,6 @@ in
         type = types.attrsOf (types.submoduleWith {
           specialArgs = {
             inherit pkgs;
-            process-compose-flake-lib = (import ./process-compose-flake-lib.nix) { inherit lib; };
           };
           modules = [
             ./process-compose
