@@ -75,9 +75,10 @@ in
       };
     }];
     test-cli = lib.mkMerge [
-      (lib.attrsets.recursiveUpdate config.cli {
-        up.config = [ "${config.outputs.settingsTestFile}" ];
-      })
+      {
+        up = (lib.removeAttrs config.cli.up [ "output" ]) // { config = [ "${config.outputs.settingsTestFile}" ]; };
+        global = lib.removeAttrs config.cli.global [ "output" ];
+      }
     ];
   };
 }
