@@ -2,7 +2,6 @@
 
 let
   inherit (lib) types mkOption;
-  cliOptions = import ./cli-options.nix { inherit lib; };
 in
 {
   options =
