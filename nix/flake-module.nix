@@ -16,9 +16,7 @@ in
           executables from process-compose configurations written as Nix attribute sets.
         '';
         type = types.attrsOf (types.submoduleWith {
-          specialArgs = {
-            inherit pkgs;
-          };
+          specialArgs = { inherit pkgs; };
           modules = [
             ./process-compose
           ];

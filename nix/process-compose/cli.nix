@@ -1,4 +1,4 @@
-{ lib, config, process-compose-flake-lib, ... }:
+{ lib, config, ... }:
 
 let
   inherit (lib) types mkOption;
