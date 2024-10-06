@@ -1,145 +1,123 @@
-{ lib }:
+{ lib, config, options, ... }:
 let
   inherit (lib) types mkOption;
 in
-lib.mkOption {
-  type = types.submodule {
-    options = {
-      global = lib.mkOption {
-        type = types.submodule ({ config, ... }: {
-          options = {
-            log-file = mkOption {
-              type = types.nullOr types.str;
-              default = null;
-            };
-            no-server = mkOption {
-              type = types.bool;
-              default = false;
-            };
-            ordered-shutdown = mkOption {
-              type = types.bool;
-              default = false;
-            };
-            port = mkOption {
-              type = types.nullOr types.int;
-              default = null;
-            };
-            read-only = mkOption {
-              type = types.bool;
-              default = false;
-            };
-            unix-socket = mkOption {
-              type = types.nullOr types.str;
-              default = null;
-            };
-            use-uds = mkOption {
-              type = types.bool;
-              default = false;
-            };
-            output = mkOption {
-              type = types.str;
-              internal = true;
-              default = "";
-            };
-          };
-          config = {
-            output = lib.escapeShellArgs (
-              (lib.optionals (config.log-file != null && config.log-file != "") [ "--log-file" config.log-file ])
-              ++ (lib.optionals config.no-server [ "--no-server" ])
-              ++ (lib.optionals config.ordered-shutdown [ "--ordered-shutdown" ])
-              ++ (lib.optionals (config.port != null) [ "--port" "${builtins.toString config.port}" ])
-              ++ (lib.optionals config.read-only [ "--read-only" ])
-              ++ (lib.optionals (config.unix-socket != "") [ "--unix-socket" config.unix-socket ])
-              ++ (lib.optionals config.use-uds [ "--use-uds" ])
-            );
-          };
-        });
-        default = { };
+{
+  options = {
+    cli = {
+      global = {
+        log-file = mkOption {
+          type = types.nullOr types.str;
+          default = null;
+        };
+        no-server = mkOption {
+          type = types.bool;
+          default = false;
+        };
+        ordered-shutdown = mkOption {
+          type = types.bool;
+          default = false;
+        };
+        port = mkOption {
+          type = types.nullOr types.int;
+          default = null;
+        };
+        read-only = mkOption {
+          type = types.bool;
+          default = false;
+        };
+        unix-socket = mkOption {
+          type = types.nullOr types.str;
+          default = null;
+        };
+        use-uds = mkOption {
+          type = types.bool;
+          default = false;
+        };
       };
-      up = lib.mkOption {
-        type = types.submodule ({ config, ... }: {
-          options = {
-            config = mkOption {
-              type = types.listOf types.str;
-              default = [ ];
-            };
-            detached = mkOption {
-              type = types.bool;
-              default = false;
-            };
-            disable-dotenv = mkOption {
-              type = types.bool;
-              default = false;
-            };
-            env = mkOption {
-              type = types.listOf types.str;
-              default = [ ];
-            };
-            hide-disabled = mkOption {
-              type = types.bool;
-              default = false;
-            };
-            keep-project = mkOption {
-              type = types.bool;
-              default = false;
-            };
-            namespace = mkOption {
-              type = types.listOf types.str;
-              default = [ ];
-            };
-            no-deps = mkOption {
-              type = types.bool;
-              default = false;
-            };
-            ref-rate = mkOption {
-              type = types.nullOr types.str;
-              default = null;
-            };
-            reverse = mkOption {
-              type = types.bool;
-              default = false;
-            };
-            sort = mkOption {
-              type = types.nullOr types.str;
-              default = null;
-            };
-            theme = mkOption {
-              type = types.nullOr types.str;
-              default = null;
-            };
-            tui = mkOption {
-              type = types.bool;
-              default = true;
-            };
-            output = mkOption {
-              type = types.str;
-              internal = true;
-              default = "";
-            };
-          };
-          config = {
-            output = lib.escapeShellArgs (
-              (lib.concatMap (v: [ "--config" v ]) config.config)
-              ++ (lib.optionals config.detached [ "--detached" ])
-              ++ (lib.optionals config.disable-dotenv [ "--disable-dotenv" ])
-              ++ (lib.concatMap (v: [ "--env" v ]) config.env)
-              ++ (lib.optionals config.hide-disabled [ "--hide-disabled" ])
-              ++ (lib.optionals config.keep-project [ "--keep-project" ])
-              ++ (lib.concatMap (v: [ "--namespace" v ]) config.namespace)
-              ++ (lib.optionals config.no-deps [ "--no-deps" ])
-              ++ (lib.optionals (config.ref-rate != null && config.ref-rate != "") [ "--ref-rate" config.ref-rate ])
-              ++ (lib.optionals config.reverse [ "--reverse" ])
-              ++ (lib.optionals (config.sort != null && config.sort != "") [ "--sort" config.sort ])
-              ++ (lib.optionals (config.theme != null && config.theme != "") [ "--theme" config.theme ])
-              ++ (lib.optionals config.reverse [ "--reverse" ])
-              ++ (lib.optionals (!config.tui) [ "--tui=false" ])
-            );
-          };
-        });
-        default = { };
+      up = {
+        detached = mkOption {
+          type = types.bool;
+          default = false;
+        };
+        disable-dotenv = mkOption {
+          type = types.bool;
+          default = false;
+        };
+        env = mkOption {
+          type = types.listOf types.str;
+          default = [ ];
+        };
+        hide-disabled = mkOption {
+          type = types.bool;
+          default = false;
+        };
+        keep-project = mkOption {
+          type = types.bool;
+          default = false;
+        };
+        namespace = mkOption {
+          type = types.listOf types.str;
+          default = [ ];
+        };
+        no-deps = mkOption {
+          type = types.bool;
+          default = false;
+        };
+        ref-rate = mkOption {
+          type = types.nullOr types.str;
+          default = null;
+        };
+        reverse = mkOption {
+          type = types.bool;
+          default = false;
+        };
+        sort = mkOption {
+          type = types.nullOr types.str;
+          default = null;
+        };
+        theme = mkOption {
+          type = types.nullOr types.str;
+          default = null;
+        };
+        tui = mkOption {
+          type = types.bool;
+          default = true;
+        };
+      };
+      cliArguments = {
+        global = lib.mkOption {
+          type = types.str;
+          default = let global = config.cli.global; in lib.escapeShellArgs (
+            (lib.optionals (global.log-file != null && global.log-file != "") [ "--log-file" global.log-file ])
+            ++ (lib.optionals global.no-server [ "--no-server" ])
+            ++ (lib.optionals global.ordered-shutdown [ "--ordered-shutdown" ])
+            ++ (lib.optionals (global.port != null) [ "--port" "${builtins.toString global.port}" ])
+            ++ (lib.optionals global.read-only [ "--read-only" ])
+            ++ (lib.optionals (global.unix-socket != "") [ "--unix-socket" global.unix-socket ])
+            ++ (lib.optionals global.use-uds [ "--use-uds" ])
+          );
+        };
+        up = lib.mkOption {
+          type = types.str;
+          default = let up = config.cli.up; in lib.escapeShellArgs (
+            (lib.optionals up.detached [ "--detached" ])
+            ++ (lib.optionals up.disable-dotenv [ "--disable-dotenv" ])
+            ++ (lib.concatMap (v: [ "--env" v ]) up.env)
+            ++ (lib.optionals up.hide-disabled [ "--hide-disabled" ])
+            ++ (lib.optionals up.keep-project [ "--keep-project" ])
+            ++ (lib.concatMap (v: [ "--namespace" v ]) up.namespace)
+            ++ (lib.optionals up.no-deps [ "--no-deps" ])
+            ++ (lib.optionals (up.ref-rate != null && up.ref-rate != "") [ "--ref-rate" up.ref-rate ])
+            ++ (lib.optionals up.reverse [ "--reverse" ])
+            ++ (lib.optionals (up.sort != null && up.sort != "") [ "--sort" up.sort ])
+            ++ (lib.optionals (up.theme != null && up.theme != "") [ "--theme" up.theme ])
+            ++ (lib.optionals up.reverse [ "--reverse" ])
+            ++ (lib.optionals (!up.tui) [ "--tui=false" ])
+          );
+        };
       };
     };
   };
-  default = { };
 }
 

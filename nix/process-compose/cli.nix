@@ -58,13 +58,10 @@ in
         default = true;
         description = "Enable or disable the TUI for the application.";
       };
-      cli = cliOptions;
-      test-cli = cliOptions;
     };
   config = {
-    cli = lib.mkMerge [{
+    cli = {
       up = {
-        config = [ "${config.outputs.settingsFile}" ];
         tui = config.tui;
       };
       global = {
@@ -73,12 +70,6 @@ in
         unix-socket = if builtins.isString config.httpServer.uds then config.httpServer.uds else "";
         no-server = if config.httpServer.enable == true then false else true;
       };
-    }];
-    test-cli = lib.mkMerge [
-      {
-        up = (lib.removeAttrs config.cli.up [ "output" ]) // { config = [ "${config.outputs.settingsTestFile}" ]; };
-        global = lib.removeAttrs config.cli.global [ "output" ];
-      }
-    ];
+    };
   };
 }
