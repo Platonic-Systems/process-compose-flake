@@ -57,7 +57,7 @@ in
             fi
 
             set -x
-            process-compose "''${params[@]}" "$@"
+            process-compose "$@" "''${params[@]}"
             set +x
 
             ${postHook}
