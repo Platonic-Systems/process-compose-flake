@@ -4,6 +4,7 @@
 
 - New features
     - #81: Complete support for specifying process-compose CLI options (global and `up` subcommand arguments)
+      - **Breaking change**: Old options `httpServer` and `tui` were removed; users should use the new `cli` module to set all process-compose cli arguments and options.
     - ~~#18: Add `testScript` option for adding flake checks based on nixosTest library.~~
     - #39: Allow `test` process to act as a test, which then gets run as part of flake checks.
     - #55: Add `lib` flake output - library of useful functions
