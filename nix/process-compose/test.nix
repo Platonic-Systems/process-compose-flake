@@ -19,7 +19,7 @@ in
             export HOME=$TMP
             cd $HOME
             # Run with tui disabled because /dev/tty is disabled in the simulated shell
-            ${lib.getExe config.outputs.testPackage} -t=false
+            ${lib.getExe config.outputs.testPackage} up -t=false
             # `runCommand` will fail if $out isn't created
             touch $out
           ''

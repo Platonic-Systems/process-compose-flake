@@ -45,16 +45,20 @@ in
           text = ''
             ${preHook}
 
-            run-process-compose () {
-              set -x; process-compose ${cliOutputs.global} "$@"; set +x
-            }
 
-            # Run `up` command, with arguments; unless the user wants to pass their own subcommand.
-            if [ "$#" -eq 0 ]; then
-              run-process-compose up --config ${configFile} ${cliOutputs.up}
-            else
-              run-process-compose "$@"
+            # If there are no arguments, it's the "up" command
+            # If the first argument is "up", it's also the "up" command
+            # If the first argument starts with a dash, we assume there isn't a subcommand, so it's also the "up" command
+            # Otherwise, we assume it's a subcommand other than "up"
+            params=(${cliOutputs.global})
+            set +u
+            if [ -z "$1" ] || [[ "$1" == "up" ]] || [[ "$1" == -* ]] ; then
+              params+=(--config ${configFile} ${cliOutputs.up})
             fi
+
+            set -x
+            process-compose "''${params[@]}" "$@"
+            set +x
 
             ${postHook}
           '';
