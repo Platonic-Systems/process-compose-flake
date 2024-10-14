@@ -45,7 +45,16 @@ in
           text = ''
             ${preHook}
 
-            set -x; process-compose ${cliOutputs.global} ${cliOutputs.up} --config ${configFile} "$@"; set +x
+            run-process-compose () {
+              set -x; process-compose ${cliOutputs.global} --config ${configFile} "$@"; set +x
+            }
+
+            # Run `up` command, with arguments; unless the user wants to pass their own subcommand.
+            if [ "$#" -eq 0 ]; then
+              run-process-compose up ${cliOutputs.up}
+            else
+              run-process-compose "$@"
+            fi
 
             ${postHook}
           '';
