@@ -13,3 +13,7 @@ doc:
 # Build docs static website (this runs linkcheck automatically)
 doc-static:
     nix build ./doc
+
+# Run example, using current process-compose
+ex:
+  cd ./example && nix run --override-input process-compose-flake ..
