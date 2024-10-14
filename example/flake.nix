@@ -23,7 +23,17 @@
             dataFile = "data.sqlite";
           in
           {
-            # httpServer.enable = true;
+            cli = {
+              # Global options for `process-compose`
+              global = {
+                no-server = true;
+              };
+              # Options for `process-compose up`
+              up = {
+                disable-dotenv = true;
+                theme = "Cobalt";
+              };
+            };
             settings = {
               environment = {
                 SQLITE_WEB_PASSWORD = "demo";

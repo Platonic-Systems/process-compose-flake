@@ -6,6 +6,7 @@ in
 {
   imports = [
     ./cli.nix
+    ./cli-options.nix
     ./settings
     ./test.nix
   ];
@@ -37,21 +38,23 @@ in
 
   config.outputs =
     let
-      mkProcessComposeWrapper = { name, tui, httpServer, configFile, preHook, postHook }:
+      mkProcessComposeWrapper = { name, cliOutputs, configFile, preHook, postHook, }:
         pkgs.writeShellApplication {
           inherit name;
           runtimeInputs = [ config.package ];
           text = ''
-            export PC_CONFIG_FILES=${configFile}
-            ${
-              # Once the following issue is fixed we should be able to simply do:
-              # export PC_DISABLE_TUI=${builtins.toJSON (!config.tui)}
-              # https://github.com/F1bonacc1/process-compose/issues/75
-              if tui then "" else "export PC_DISABLE_TUI=true"
-            }
             ${preHook}
 
-            set -x; process-compose ${httpServer.outputs.cliOpts} "$@"; set +x
+            run-process-compose () {
+              set -x; process-compose ${cliOutputs.global} --config ${configFile} "$@"; set +x
+            }
+
+            # Run `up` command, with arguments; unless the user wants to pass their own subcommand.
+            if [ "$#" -eq 0 ]; then
+              run-process-compose up ${cliOutputs.up}
+            else
+              run-process-compose "$@"
+            fi
 
             ${postHook}
           '';
@@ -62,7 +65,8 @@ in
         mkProcessComposeWrapper
           {
             inherit name;
-            inherit (config) tui httpServer preHook postHook;
+            inherit (config) preHook postHook;
+            cliOutputs = config.cli.outputs;
             configFile = config.outputs.settingsFile;
           };
       testPackage =
@@ -72,10 +76,10 @@ in
           mkProcessComposeWrapper
             {
               name = "${name}-test";
-              inherit (config) tui httpServer preHook postHook;
+              inherit (config) preHook postHook;
+              cliOutputs = config.cli.outputs;
               configFile = config.outputs.settingsTestFile;
             }
         else null;
     };
 }
-
