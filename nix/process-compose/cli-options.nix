@@ -85,7 +85,7 @@ in
           default = true;
         };
       };
-      cliArguments = {
+      outputs = {
         global = lib.mkOption {
           type = types.str;
           default = let global = config.cli.global; in lib.escapeShellArgs (
@@ -120,4 +120,3 @@ in
     };
   };
 }
-

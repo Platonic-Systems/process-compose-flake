@@ -38,14 +38,14 @@ in
 
   config.outputs =
     let
-      mkProcessComposeWrapper = { name, cliArguments, configFile, preHook, postHook, }:
+      mkProcessComposeWrapper = { name, cliOutputs, configFile, preHook, postHook, }:
         pkgs.writeShellApplication {
           inherit name;
           runtimeInputs = [ config.package ];
           text = ''
             ${preHook}
 
-            set -x; process-compose ${cliArguments.global} ${cliArguments.up} --config ${configFile} "$@"; set +x
+            set -x; process-compose ${cliOutputs.global} ${cliOutputs.up} --config ${configFile} "$@"; set +x
 
             ${postHook}
           '';
@@ -57,8 +57,8 @@ in
           {
             inherit name;
             inherit (config) preHook postHook;
+            cliOutputs = config.cli.outputs;
             configFile = config.outputs.settingsFile;
-            cliArguments = config.cli.cliArguments;
           };
       testPackage =
         if
@@ -68,8 +68,8 @@ in
             {
               name = "${name}-test";
               inherit (config) preHook postHook;
+              cliOutputs = config.cli.outputs;
               configFile = config.outputs.settingsTestFile;
-              cliArguments = config.cli.cliArguments;
             }
         else null;
     };
