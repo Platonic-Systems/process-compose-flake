@@ -87,9 +87,12 @@
             };
           };
 
-        # nix run .#ponysay up to start the process
+        # nix run .#ponysay to start the process
+        # nun run .#ponysay attach to show the output
+        # nix run .#ponysay down to stop the process
         packages.ponysay = (import inputs.process-compose-flake.lib { inherit pkgs; }).makeProcessCompose {
           modules = [{
+            cli.up.detached = true;
             settings = {
               processes = {
                 ponysay.command = ''
