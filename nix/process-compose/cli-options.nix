@@ -88,6 +88,7 @@ in
 
       # The final CLI arguments we will pass to process-compose binary.
       outputs = {
+        # TODO: We should refactor this to generically iterate on options and produce the CLI automatically using naming conventions and types.
         global = lib.mkOption {
           type = types.str;
           default = let global = config.cli.global; in lib.escapeShellArgs (
