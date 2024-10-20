@@ -45,14 +45,15 @@ in
           text = ''
             ${preHook}
 
-
-            # If there are no arguments, it's the "up" command
-            # If the first argument is "up", it's also the "up" command
-            # If the first argument starts with a dash, we assume there isn't a subcommand, so it's also the "up" command
-            # Otherwise, we assume it's a subcommand other than "up"
-            params=(${cliOutputs.global})
             set +u
-            if [ -z "$1" ] || [[ "$1" == "up" ]] || [[ "$1" == -* ]] ; then
+            if [ -z "$1" ] || [[ "$1" == -* ]] ; then
+              echo "process-compose-flake requires a subcommand like 'up' as the first argument. Configured subcommand cli options are ignored otherwise."
+              echo "To get a list about available subcommands, use the 'help' subcommand"
+              exit 1
+            fi
+            
+            params=(${cliOutputs.global})
+            if [[ "$1" == "up" ]] ; then
               params+=(--config ${configFile} ${cliOutputs.up})
             fi
 
