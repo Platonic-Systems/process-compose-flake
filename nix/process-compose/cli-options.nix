@@ -9,30 +9,37 @@ in
         log-file = mkOption {
           type = types.nullOr types.str;
           default = null;
+          description = "Pass --log-file to process-compose";
         };
         no-server = mkOption {
           type = types.bool;
           default = false;
+          description = "Pass --no-server to process-compose";
         };
         ordered-shutdown = mkOption {
           type = types.bool;
           default = false;
+          description = "Pass --ordered-shutdown to process-compose";
         };
         port = mkOption {
           type = types.nullOr types.int;
           default = null;
+          description = "Pass --port to process-compose";
         };
         read-only = mkOption {
           type = types.bool;
           default = false;
+          description = "Pass --read-only to process-compose";
         };
         unix-socket = mkOption {
           type = types.nullOr types.str;
           default = null;
+          description = "Pass --unix-socket to process-compose";
         };
         use-uds = mkOption {
           type = types.bool;
           default = false;
+          description = "Pass --use-uds to process-compose";
         };
       };
 
