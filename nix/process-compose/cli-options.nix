@@ -54,6 +54,7 @@ in
         # TODO: We should refactor this to generically iterate on options and produce the CLI automatically using naming conventions and types.
         options = lib.mkOption {
           type = types.str;
+          readOnly = true;
           description = "The final CLI arguments we will pass to process-compose binary.";
           default = let o = config.cli.options; in lib.escapeShellArgs (
             (lib.optionals (o.log-file != null) [ "--log-file" o.log-file ])
