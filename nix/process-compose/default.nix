@@ -37,22 +37,22 @@ in
 
   config.outputs =
     let
-      mkProcessComposeWrapper = { name, cliOutputs, configFile, preHook, postHook, }:
+      mkProcessComposeWrapper = { name, configFile }:
         pkgs.writeShellApplication {
           inherit name;
           runtimeInputs = [ config.package ];
           text = ''
-            ${preHook}
+            ${config.cli.preHook}
 
             run-process-compose () {
               set -x
-              ${cliOutputs.environment} process-compose ${cliOutputs.options} --config ${configFile} "$@"
+              ${config.cli.outputs.environment} process-compose ${config.cli.outputs.options} --config ${configFile} "$@"
               set +x
             }
 
             run-process-compose "$@"
 
-            ${postHook}
+            ${config.cli.postHook}
           '';
         };
     in
@@ -61,19 +61,13 @@ in
         mkProcessComposeWrapper
           {
             inherit name;
-            inherit (config.cli) preHook postHook;
-            cliOutputs = config.cli.outputs;
             configFile = config.outputs.settingsFile;
           };
       testPackage =
-        if
-          (builtins.hasAttr "test" config.settings.processes)
-        then
+        if (builtins.hasAttr "test" config.settings.processes) then
           mkProcessComposeWrapper
             {
               name = "${name}-test";
-              inherit (config.cli) preHook postHook;
-              cliOutputs = config.cli.outputs;
               configFile = config.outputs.settingsTestFile;
             }
         else null;
