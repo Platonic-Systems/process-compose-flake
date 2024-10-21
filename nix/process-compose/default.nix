@@ -45,7 +45,9 @@ in
             ${preHook}
 
             run-process-compose () {
-              set -x; process-compose ${cliOutputs.options} --config ${configFile} "$@"; set +x
+              set -x
+              ${cliOutputs.environment} process-compose ${cliOutputs.options} --config ${configFile} "$@"
+              set +x
             }
 
             run-process-compose "$@"

@@ -24,6 +24,7 @@
           in
           {
             cli = {
+              # environment.PC_DISABLE_TUI = true;
               # Global options for `process-compose`
               options = {
                 no-server = true;
