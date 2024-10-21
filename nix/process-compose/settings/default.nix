@@ -126,15 +126,15 @@ in
           # evaluate it again and to get rid of it.
         in
         lib.pipe attrs [ f f ];
-      toPCJson = attrs:
+      toPCJson = name: attrs:
         pkgs.writeTextFile {
           name = "process-compose-${name}.json";
           text = builtins.toJSON attrs;
         };
     in
     {
-      settingsFile = toPCJson (removeNullAndEmptyAttrs config.settings);
-      settingsTestFile = toPCJson (removeNullAndEmptyAttrs
+      settingsFile = toPCJson name (removeNullAndEmptyAttrs config.settings);
+      settingsTestFile = toPCJson "${name}-test" (removeNullAndEmptyAttrs
         (lib.updateManyAttrsByPath [
           {
             path = [ "processes" "test" ];
@@ -144,4 +144,3 @@ in
           config.settings));
     };
 }
-
