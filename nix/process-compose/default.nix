@@ -44,6 +44,7 @@ in
           text = ''
             ${config.cli.preHook}
 
+            # IMPORTANT: We **must** use environment variables for everything but non-global options, otherwise the use of sub-command specific CLI options will prevent the user from passing their own subcommands reliably.
             set -x
             ${config.cli.outputs.environment} PC_CONFIG_FILES=${configFile} process-compose ${config.cli.outputs.options} "$@"
             set +x
