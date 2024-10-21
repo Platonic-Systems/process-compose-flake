@@ -6,7 +6,6 @@ in
 {
   imports = [
     ./cli.nix
-    ./cli-options.nix
     ./settings
     ./test.nix
   ];
@@ -38,25 +37,18 @@ in
 
   config.outputs =
     let
-      mkProcessComposeWrapper = { name, cliOutputs, configFile, preHook, postHook, }:
+      mkProcessComposeWrapper = { name, configFile }:
         pkgs.writeShellApplication {
           inherit name;
           runtimeInputs = [ config.package ];
           text = ''
-            ${preHook}
+            ${config.cli.preHook}
 
-            run-process-compose () {
-              set -x; process-compose ${cliOutputs.global} --config ${configFile} "$@"; set +x
-            }
+            set -x
+            ${config.cli.outputs.environment} PC_CONFIG_FILES=${configFile} process-compose ${config.cli.outputs.options} "$@"
+            set +x
 
-            # Run `up` command, with arguments; unless the user wants to pass their own subcommand.
-            if [ "$#" -eq 0 ]; then
-              run-process-compose up ${cliOutputs.up}
-            else
-              run-process-compose "$@"
-            fi
-
-            ${postHook}
+            ${config.cli.postHook}
           '';
         };
     in
@@ -65,19 +57,13 @@ in
         mkProcessComposeWrapper
           {
             inherit name;
-            inherit (config) preHook postHook;
-            cliOutputs = config.cli.outputs;
             configFile = config.outputs.settingsFile;
           };
       testPackage =
-        if
-          (builtins.hasAttr "test" config.settings.processes)
-        then
+        if (builtins.hasAttr "test" config.settings.processes) then
           mkProcessComposeWrapper
             {
               name = "${name}-test";
-              inherit (config) preHook postHook;
-              cliOutputs = config.cli.outputs;
               configFile = config.outputs.settingsTestFile;
             }
         else null;
