@@ -5,7 +5,7 @@ on:
       - main
   pull_request:
 jobs:
-  checks:
+  build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -16,3 +16,9 @@ jobs:
       - name: Install omnix
         run: nix --accept-flake-config profile install "github:juspay/omnix"
       - run: om ci
+  flake-parts-linkCheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+      - run: nix build github:hercules-ci/flake.parts-website#checks.x86_64-linux.linkcheck --override-input process-compose-flake .
