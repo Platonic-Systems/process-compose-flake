@@ -5,7 +5,7 @@ let
 in
 {
   imports = [
-    ./cli-options.nix
+    ./cli.nix
     ./settings
     ./test.nix
   ];
