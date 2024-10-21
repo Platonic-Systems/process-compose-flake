@@ -44,13 +44,9 @@ in
           text = ''
             ${config.cli.preHook}
 
-            run-process-compose () {
-              set -x
-              ${config.cli.outputs.environment} PC_CONFIG_FILES=${configFile} process-compose ${config.cli.outputs.options} "$@"
-              set +x
-            }
-
-            run-process-compose "$@"
+            set -x
+            ${config.cli.outputs.environment} PC_CONFIG_FILES=${configFile} process-compose ${config.cli.outputs.options} "$@"
+            set +x
 
             ${config.cli.postHook}
           '';
