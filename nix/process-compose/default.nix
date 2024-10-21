@@ -46,7 +46,7 @@ in
 
             run-process-compose () {
               set -x
-              ${config.cli.outputs.environment} process-compose ${config.cli.outputs.options} --config ${configFile} "$@"
+              ${config.cli.outputs.environment} PC_CONFIG_FILES=${configFile} process-compose ${config.cli.outputs.options} "$@"
               set +x
             }
 
