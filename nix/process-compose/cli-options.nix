@@ -5,6 +5,16 @@ in
 {
   options = {
     cli = {
+      preHook = mkOption {
+        type = types.lines;
+        default = "";
+        description = "Shell commands to run before process-compose starts.";
+      };
+      postHook = mkOption {
+        type = types.lines;
+        default = "";
+        description = "Shell commands to run after process-compose completes.";
+      };
       options = mkOption {
         description = "CLI options to pass to process-compose binary";
         default = { };

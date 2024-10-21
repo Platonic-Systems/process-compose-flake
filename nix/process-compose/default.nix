@@ -5,7 +5,6 @@ let
 in
 {
   imports = [
-    ./cli.nix
     ./cli-options.nix
     ./settings
     ./test.nix
@@ -60,7 +59,7 @@ in
         mkProcessComposeWrapper
           {
             inherit name;
-            inherit (config) preHook postHook;
+            inherit (config.cli) preHook postHook;
             cliOutputs = config.cli.outputs;
             configFile = config.outputs.settingsFile;
           };
@@ -71,7 +70,7 @@ in
           mkProcessComposeWrapper
             {
               name = "${name}-test";
-              inherit (config) preHook postHook;
+              inherit (config.cli) preHook postHook;
               cliOutputs = config.cli.outputs;
               configFile = config.outputs.settingsTestFile;
             }
