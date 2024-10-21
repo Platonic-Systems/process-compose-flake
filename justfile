@@ -15,5 +15,9 @@ doc-static:
     nix build ./doc
 
 # Run example, using current process-compose
-ex:
-  cd ./example && nix run --override-input process-compose-flake ..
+ex *ARGS:
+  cd ./example && nix run --override-input process-compose-flake .. . -- {{ARGS}}
+
+# Run example's test
+ex-check:
+  cd ./example && nix flake check -L --override-input process-compose-flake ..
