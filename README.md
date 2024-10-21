@@ -9,7 +9,7 @@ https://community.flake.parts/process-compose-flake
 
 ## Contributing
 
-Please run `nix run github:srid/nixci build` on a NixOS machine to run the full suite of tests before pushing changes to the main branch. Our CI (Github Actions) cannot do this yet.
+Please run [`nix --accept-flake-config run github:juspay/omnix ci`](https://omnix.page/om/ci.html) on a NixOS machine to run the full suite of tests before pushing changes to the main branch. Our CI (Github Actions) cannot do this yet.
 
 ## Discussion
 
