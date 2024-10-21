@@ -25,13 +25,8 @@
           {
             cli = {
               # Global options for `process-compose`
-              global = {
+              options = {
                 no-server = true;
-              };
-              # Options for `process-compose up`
-              up = {
-                disable-dotenv = true;
-                theme = "Cobalt";
               };
             };
             settings = {
