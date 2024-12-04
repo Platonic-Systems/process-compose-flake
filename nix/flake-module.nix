@@ -3,7 +3,6 @@ let
   inherit (flake-parts-lib)
     mkPerSystemOption;
   inherit (lib)
-    mdDoc
     mkOption
     types;
 in
@@ -11,7 +10,7 @@ in
   options.perSystem = mkPerSystemOption ({ config, pkgs, lib, ... }:
     {
       options.process-compose = mkOption {
-        description = mdDoc ''
+        description = ''
           process-compose-flake: creates [process-compose](https://github.com/F1bonacc1/process-compose)
           executables from process-compose configurations written as Nix attribute sets.
         '';
