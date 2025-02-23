@@ -138,7 +138,13 @@ in
         (lib.updateManyAttrsByPath [
           {
             path = [ "processes" "test" ];
-            update = old: old // { disabled = false; availability.exit_on_end = true; };
+            update = old: old // {
+              disabled = false;
+              availability = {
+                exit_on_end = true;
+                exit_on_skipped = true;
+              };
+            };
           }
         ]
           config.settings));
