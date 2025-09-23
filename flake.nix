@@ -10,7 +10,7 @@
     };
 
     # https://github.com/srid/nixci
-    nixci.default = let overrideInputs = { process-compose-flake = ./.; }; in {
+    om.ci.default = let overrideInputs = { process-compose-flake = ./.; }; in {
       example = {
         inherit overrideInputs;
         dir = "example";
