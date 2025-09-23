@@ -51,7 +51,16 @@ in
                 File to write the logs to.
               '';
             };
-
+            log_configuration = mkOption {
+              type = types.nullOr (types.submoduleWith {
+                specialArgs = { inherit lib; };
+                modules = [ ./log-config.nix ];
+              });
+              default = null;
+              description = ''
+                The default settings for global logging.
+              '';
+            };
             shell = {
               shell_argument = mkOption {
                 type = types.str;
@@ -80,6 +89,58 @@ in
               example = "0.5";
               description = ''
                 Version of the process-compose configuration.
+              '';
+            };
+
+            vars = import ./vars.nix { inherit lib; } { };
+
+            disable_env_expansion = mkOption {
+              type = types.nullOr types.bool;
+              default = null;
+              example = false;
+              description = ''
+                Globally disables automatic \$ variable expansion.
+              '';
+            };
+
+            ordered_shutdown = mkOption {
+              type = types.nullOr types.bool;
+              default = null;
+              example = true;
+              description = ''
+                Causes processes to shut down in reverse dependency order.
+              '';
+            };
+
+            env_cmds = mkOption {
+              type = types.nullOr (types.attrsOf types.str);
+              default = null;
+              example = {
+                UPTIME = "uptime -p";
+                OS_NAME = "awk -F = '/PRETTY/ {print $2}' /etc/os-release";
+              };
+              description = ''
+                Dynamically populate environment variables by executing commands before starting processes.
+              '';
+            };
+
+            is_strict = mkOption {
+              type = types.nullOr types.bool;
+              default = null;
+              example = true;
+              description = ''
+                Enables additional checks on YAML configuration correctness.
+              '';
+            };
+
+            extends = mkOption {
+              type = types.nullOr types.path;
+              default = null;
+              example = "process-compose.base.yaml";
+              description = ''
+                Make the current configuration inherit all values in the given file.
+
+                See https://f1bonacc1.github.io/process-compose/merge#configuration-inheritance-with-extends
               '';
             };
           };
