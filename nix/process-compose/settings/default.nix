@@ -96,10 +96,11 @@ in
 
             disable_env_expansion = mkOption {
               type = types.nullOr types.bool;
-              default = null;
+              default = true;
               example = false;
               description = ''
                 Globally disables automatic \$ variable expansion.
+                Enabled by default, unlike upstream process-compose.
               '';
             };
 

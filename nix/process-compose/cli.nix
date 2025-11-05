@@ -17,13 +17,81 @@ in
       };
       environment = mkOption {
         default = { };
-        description = "Environment variables to pass to process-compose binary.";
+        description = ''
+          Environment variables to pass to process-compose binary.
+          Note that flags directly configured via cli.options will override these values.
+        '';
         type = types.submodule {
           options = {
             PC_DISABLE_TUI = mkOption {
               type = types.nullOr types.bool;
               default = null;
-              description = "Disable the TUI (Text User Interface) of process-compose";
+              description = "disable the TUI (Text User Interface) of process-compose";
+            };
+            PC_PORT_NUM = mkOption {
+              type = types.nullOr types.int;
+              default = null;
+              description = "port number on which to bind process-compose listener";
+            };
+            PC_CONFIG_FILES = mkOption {
+              type = types.nullOr types.str;
+              default = null;
+              description = "comma-separated list of path to config files to load";
+            };
+            PC_SHORTCUTS_FILES = mkOption {
+              type = types.nullOr types.str;
+              default = null;
+              description = "comma-separated list of paths to shortcut config files to load";
+            };
+            PC_NO_SERVER = mkOption {
+              type = types.nullOr types.bool;
+              default = null;
+              description = "disable HTTP server";
+            };
+            PC_SOCKET_PATH = mkOption {
+              type = types.nullOr types.str;
+              default = null;
+              description = "path to unix socket";
+            };
+            PC_READ_ONLY = mkOption {
+              type = types.nullOr types.bool;
+              default = null;
+              description = "enable read-only mode";
+            };
+            PC_DISABLE_DOTENV = mkOption {
+              type = types.nullOr types.bool;
+              default = null;
+              description = "disable .env file loading";
+            };
+            PC_TUI_FULL_SCREEN = mkOption {
+              type = types.nullOr types.bool;
+              default = null;
+              description = "enable TUI full screen";
+            };
+            PC_HIDE_DISABLED_PROC = mkOption {
+              type = types.nullOr types.bool;
+              default = null;
+              description = "hide disabled processes";
+            };
+            PC_ORDERED_SHUTDOWN = mkOption {
+              type = types.nullOr types.bool;
+              default = null;
+              description = "shut down processes in reverse dependency order";
+            };
+            PC_RECURSIVE_METRICS = mkOption {
+              type = types.nullOr types.bool;
+              default = null;
+              description = "collect metrics recursively";
+            };
+            PC_DISABLED_PROCESSES = mkOption {
+              type = types.nullOr types.str;
+              default = null;
+              description = "comma-separated list of process to initially disable";
+            };
+            PC_LOG_FILE = mkOption {
+              type = types.nullOr types.str;
+              default = null;
+              description = "specify the log file path";
             };
           };
         };
