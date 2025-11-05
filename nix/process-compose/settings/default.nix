@@ -92,7 +92,7 @@ in
               '';
             };
 
-            vars = import ./vars.nix { inherit lib; } { };
+            vars = import ./vars.nix { inherit lib; };
 
             disable_env_expansion = mkOption {
               type = types.nullOr types.bool;

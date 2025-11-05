@@ -242,7 +242,7 @@ in
       '';
     };
 
-    vars = import ./vars.nix { inherit lib; } { };
+    vars = import ./vars.nix { inherit lib; };
 
     replicas = mkOption {
       type = types.nullOr types.int;
