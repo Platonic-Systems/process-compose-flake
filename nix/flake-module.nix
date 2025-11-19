@@ -7,6 +7,7 @@ let
     types;
 in
 {
+  _file = ./flake-module.nix;
   options.perSystem = mkPerSystemOption ({ config, pkgs, lib, ... }:
     {
       options.process-compose = mkOption {
