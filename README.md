@@ -7,10 +7,6 @@ A [flake-parts](https://github.com/hercules-ci/flake-parts) module for [process-
 
 https://community.flake.parts/process-compose-flake
 
-## Contributing
-
-Please run [`nix run nixpkgs#omnix ci`](https://omnix.page/om/ci.html) on a NixOS machine to run the full suite of tests before pushing changes to the main branch. Our CI (Github Actions) cannot do this yet.
-
 ## Discussion
 
 - [Zulip](https://nixos.zulipchat.com/#narrow/stream/414022-process-compose-flake)
