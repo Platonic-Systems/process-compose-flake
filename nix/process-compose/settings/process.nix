@@ -217,7 +217,7 @@ in
       example = true;
       description = ''
         Whether the process is disabled. Useful when a process is required to be started only in a given scenario, like while running in CI.
-        
+
         Even if disabled, the process is still listed in the TUI and the REST client, and can be started manually when needed.
       '';
     };

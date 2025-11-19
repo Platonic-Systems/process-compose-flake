@@ -23,6 +23,11 @@
             dataFile = "data.sqlite";
           in
           {
+            # Default settings for all processes
+            defaults.processSettings = {
+              namespace = lib.mkDefault "sqlite-demo";
+            };
+
             cli = {
               # environment.PC_DISABLE_TUI = true;
               # Global options for `process-compose`
