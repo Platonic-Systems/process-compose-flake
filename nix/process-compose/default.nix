@@ -6,6 +6,7 @@ in
 {
   imports = [
     ./cli.nix
+    ./defaults.nix
     ./settings
     ./test.nix
   ];

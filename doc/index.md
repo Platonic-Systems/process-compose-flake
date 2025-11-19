@@ -100,6 +100,40 @@ process-compose.watch-server = {
 };
 ```
 
+### Default settings for all processes
+
+You can define default settings that apply to all processes using `defaults.processSettings`. This is useful when you want to set common configuration like namespace, restart behavior, or other settings across all processes.
+
+```nix
+process-compose.watch-server = {
+  defaults.processSettings = { name, ... }: {
+    # Set default namespace for all processes
+    namespace = lib.mkDefault "watch-server";
+    # Set default restart behavior
+    availability.restart = lib.mkDefault "on_failure";
+    availability.max_restarts = lib.mkDefault 3;
+    # Use the process name in log locations
+    log_location = ".logs/${name}.log";
+  };
+
+  settings.processes = {
+    backend-server.command = "...";
+    frontend-server.command = "...";
+    # This process overrides the default namespace
+    proxy-server = {
+      command = "...";
+      namespace = "proxy"; # Overrides the default
+    };
+  };
+};
+```
+
+**Important:** Use `lib.mkDefault` when setting defaults to ensure individual process settings can override them.
+
+You can access the process `name` parameter to create dynamic defaults (e.g., per-process log files).
+
+You can disable defaults entirely by setting `defaults.enable = false`.
+
 ## Module API
 
 Our submodule mirrors the [process-compose YAML schema](https://github.com/F1bonacc1/process-compose/blob/main/process-compose.yaml). A few things to remember:
