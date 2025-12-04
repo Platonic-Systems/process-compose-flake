@@ -49,6 +49,22 @@ in
               Which port to probe the process on.
             '';
           };
+          headers = mkOption {
+            type = types.nullOr (types.attrsOf types.str);
+            default = null;
+            example = { "x-foo" = "bar"; };
+            description = ''
+              Additional headers to set on an HTTP probe
+            '';
+          };
+          status_code = mkOption {
+            type = types.nullOr types.int;
+            default = null;
+            example = 200;
+            description = ''
+              Expected status code.
+            '';
+          };
         };
       });
       default = null;
@@ -60,6 +76,13 @@ in
           example = "ps -ef | grep -v grep | grep my-proccess";
           description = ''
             The command to execute in order to check the health of the process.
+          '';
+        };
+        options.working_dir = mkOption {
+          type = types.str;
+          example = "./directory";
+          description = ''
+            Directory in which to execute the exec probe command.
           '';
         };
       });

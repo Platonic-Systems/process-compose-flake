@@ -119,6 +119,14 @@ in
           Wait for `timeout_seconds` for its completion (if not defined wait for 10 seconds). Upon timeout, `SIGKILL` is sent to the process.
         '';
       };
+      parent_only = mkOption {
+        type = types.nullOr types.bool;
+        default = null;
+        example = false;
+        description = ''
+          If `shutdown.parent_only` is enabled, the termination signal is only sent to the parent process, not the whole group.
+        '';
+      };
     };
 
     working_dir = mkOption {
@@ -172,6 +180,18 @@ in
         Log location of the `process-compose` process.
       '';
     };
+
+    log_configuration = mkOption {
+      type = types.nullOr (types.submoduleWith {
+        specialArgs = { inherit lib; };
+        modules = [ ./log-config.nix ];
+      });
+      default = { };
+      description = ''
+        The settings for process-specific logging.
+      '';
+    };
+
     disable_ansi_colors = mkOption {
       type = types.nullOr types.bool;
       default = null;
@@ -222,5 +242,83 @@ in
       '';
     };
 
+    vars = import ./vars.nix { inherit lib; };
+
+    replicas = mkOption {
+      type = types.nullOr types.int;
+      default = null;
+      example = 2;
+      description = ''
+        Run multiple replicas of a given process.
+
+        Will set the PC_REPLICA_NUM var for expansion such that configs can run on unique ports or similar.
+      '';
+    };
+
+    description = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      example = "process does a thing";
+      description = ''
+        Set a description for the process in the UI.
+      '';
+    };
+
+    entrypoint = mkOption {
+      type = types.nullOr (types.listOf types.str);
+      default = null;
+      example = [
+        "ls"
+        "-l"
+        "/some/dir"
+      ];
+      description = ''
+        Specifies the process command as a list of arguments.
+        Overridden by the command option if it is present.
+      '';
+    };
+
+    is_elevated = mkOption {
+      type = types.nullOr types.bool;
+      default = null;
+      example = true;
+      description = ''
+        Run the command with elevated permissions,
+        using sudo or runas.
+      '';
+    };
+
+    is_disabled = mkOption {
+      type = types.nullOr types.bool;
+      default = null;
+      example = false;
+      description = ''
+        Allows turning off the disabled flag when dealing with merged configs via `extend` or multiple config file command arguments.
+
+        is_disabled has priority over disabled, so in general:
+        - use disabled in base or primary configurations
+        - use is_disabled in override configurations.
+      '';
+    };
+
+    is_dotenv_disabled = mkOption {
+      type = types.nullOr types.bool;
+      default = null;
+      example = true;
+      description = ''
+        If set to true, prevents process-compose from loading any .env files in the working directory.
+
+        Does not prevent other sources of env variables, such as the env section of the configuration.
+      '';
+    };
+
+    launch_timeout_seconds = mkOption {
+      type = types.nullOr types.int;
+      default = null;
+      example = 2;
+      description = ''
+        If a parent process with is_daemon takes longer than this to fork in to the background, process-compose will stop waiting for logs and start waiting for process termination.
+      '';
+    };
   };
 }
