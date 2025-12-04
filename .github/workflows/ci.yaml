@@ -12,7 +12,7 @@ jobs:
         os: [ubuntu-latest, macos-latest]
     steps:
       - uses: actions/checkout@v4
-      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: nixbuild/nix-quick-install-action@v33
       - name: Install omnix
         run: nix --accept-flake-config profile install "github:juspay/vira"
       - run: vira ci
@@ -20,5 +20,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: nixbuild/nix-quick-install-action@v33
       - run: nix build github:hercules-ci/flake.parts-website#checks.x86_64-linux.linkcheck --override-input process-compose-flake .
