@@ -6,6 +6,7 @@ in
 {
   imports = [
     ./cli.nix
+    ./defaults.nix
     ./settings
     ./test.nix
   ];
@@ -45,7 +46,7 @@ in
             ${config.cli.preHook}
 
             # IMPORTANT: We **must** use environment variables for everything but non-global options, otherwise the use of sub-command specific CLI options will prevent the user from passing their own subcommands reliably.
-            ${config.cli.outputs.environment} PC_CONFIG_FILES=${configFile} process-compose ${config.cli.outputs.options} "$@"
+            ${config.cli.outputs.environment} PC_CONFIG_FILES=${configFile} ${if config.cli.postHook == "" then "exec " else ""}process-compose ${config.cli.outputs.options} "$@"
 
             ${config.cli.postHook}
           '';

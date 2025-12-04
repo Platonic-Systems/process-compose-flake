@@ -10,7 +10,12 @@ in
         modules = [{
           options = {
             processes = mkOption {
-              type = types.attrsOf (types.submoduleWith { modules = [ ./process.nix ]; });
+              type = types.attrsOf (types.submoduleWith {
+                modules = [
+                  ./process.nix
+                  config.defaults.processSettings
+                ];
+              });
               default = { };
               description = ''
                 A map of process names to their configuration.

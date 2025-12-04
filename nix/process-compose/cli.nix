@@ -101,6 +101,11 @@ in
         default = { };
         type = types.submodule {
           options = {
+            keep-project = mkOption {
+              type = types.bool;
+              default = false;
+              description = "Pass --keep-project to process-compose";
+            };
             log-file = mkOption {
               type = types.nullOr types.str;
               default = null;
@@ -149,6 +154,7 @@ in
           description = "The final CLI arguments we will pass to process-compose binary.";
           default = let o = config.cli.options; in lib.escapeShellArgs (
             (lib.optionals (o.log-file != null) [ "--log-file" o.log-file ])
+            ++ (lib.optionals o.keep-project [ "--keep-project" ])
             ++ (lib.optionals o.no-server [ "--no-server" ])
             ++ (lib.optionals o.ordered-shutdown [ "--ordered-shutdown" ])
             ++ (lib.optionals (o.port != null) [ "--port" "${builtins.toString o.port}" ])
