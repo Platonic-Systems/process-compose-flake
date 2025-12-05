@@ -79,7 +79,8 @@ in
           '';
         };
         options.working_dir = mkOption {
-          type = types.str;
+          type = types.nullOr types.str;
+          default = null;
           example = "./directory";
           description = ''
             Directory in which to execute the exec probe command.
