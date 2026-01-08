@@ -28,6 +28,11 @@ in
               default = null;
               description = "disable the TUI (Text User Interface) of process-compose";
             };
+            PC_ADDRESS = mkOption {
+              type = types.nullOr types.str;
+              default = null;
+              description = "address on which to bind process-compose listener";
+            };
             PC_PORT_NUM = mkOption {
               type = types.nullOr types.int;
               default = null;
