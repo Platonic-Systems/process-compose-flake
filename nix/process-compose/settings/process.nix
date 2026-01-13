@@ -223,6 +223,16 @@ in
         - In TUI mode, a local process will be started.
       '';
     };
+    is_interactive = mkOption {
+      type = types.nullOr types.bool;
+      default = null;
+      example = true;
+      description = ''
+        Interactive processes allow you to interact directly with a running process through the TUI. This is useful for processes that require user input, such as a REPL, a debugger, or a command-line editor.
+
+        When a process is configured as interactive, Process Compose allocates a pseudo-terminal (PTY) for it and allows you to attach to its standard input and output.
+      '';
+    };
     is_tty = mkOption {
       type = types.nullOr types.bool;
       default = null;
