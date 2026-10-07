@@ -106,11 +106,6 @@ in
         default = { };
         type = types.submodule {
           options = {
-            keep-project = mkOption {
-              type = types.bool;
-              default = false;
-              description = "Pass --keep-project to process-compose";
-            };
             log-file = mkOption {
               type = types.nullOr types.str;
               default = null;
