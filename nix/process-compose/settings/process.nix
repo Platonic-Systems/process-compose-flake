@@ -172,17 +172,18 @@ in
     };
 
     env_file = mkOption {
-      type = types.pathWith { };
+      type = types.nullOr types.str;
       default = null;
       example = "./.env";
       description = "The environment file which is sourced for that process.";
     };
 
     environment = import ./environment.nix { inherit lib; };
+
     log_location = mkOption {
       type = types.nullOr types.str;
       default = null;
-      example = "./pc.my-proccess.log";
+      example = "./pc.my-process.log";
       description = ''
         Log location of the `process-compose` process.
       '';
