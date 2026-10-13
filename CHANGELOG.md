@@ -21,6 +21,7 @@
       - #226: Add `availability.exit_on_skipped`
       - #77: Add `is_tty`
       - #112: Add `is_interactive`
+    - #113: Remove `keep-project` as its not provided on all level of `process-compose` CLI.
 - Notable changes
     - #58: Obviate IFD by switching to JSON config
 - Fixes
