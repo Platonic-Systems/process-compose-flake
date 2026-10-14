@@ -21,7 +21,6 @@
       - #226: Add `availability.exit_on_skipped`
       - #77: Add `is_tty`
       - #112: Add `is_interactive`
-    - #113: Remove `keep-project` as its not provided on all level of `process-compose` CLI.
 - Notable changes
     - #58: Obviate IFD by switching to JSON config
 - Fixes
@@ -29,6 +28,8 @@
     - #22: `command` option is no longer wrapped in `writeShellApplication`.
     - #20: Fix definiton of `probe.exec`
     - #53: Make process submodule a proper submodule (allowing use of `imports` etc)
+- Breaking changes
+    - #113: Remove `keep-project` as its not provided on all level of `process-compose` CLI.
 
 
 ## 0.1.0 (Jun 12, 2023)
