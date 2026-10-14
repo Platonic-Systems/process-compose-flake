@@ -171,11 +171,19 @@ in
       '';
     };
 
+    env_file = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      example = "./.env";
+      description = "The environment file which is sourced for that process.";
+    };
+
     environment = import ./environment.nix { inherit lib; };
+
     log_location = mkOption {
       type = types.nullOr types.str;
       default = null;
-      example = "./pc.my-proccess.log";
+      example = "./pc.my-process.log";
       description = ''
         Log location of the `process-compose` process.
       '';
@@ -330,5 +338,8 @@ in
         If a parent process with is_daemon takes longer than this to fork in to the background, process-compose will stop waiting for logs and start waiting for process termination.
       '';
     };
+
+    # Added to process-compose in v1.122.0
+    watch = import ./watch.nix { inherit lib; };
   };
 }
